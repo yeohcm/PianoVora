@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { useAudioEngine } from '@/features/audio/useAudioEngine';
 import { usePitchDetector } from '@/features/pitch/usePitchDetector';
@@ -10,6 +10,7 @@ import { PianoKeyboard } from '@/features/keyboard/PianoKeyboard';
 import NoteHistoryPanel from './NoteHistoryPanel';
 import OnboardingModal from './OnboardingModal';
 import ErrorBanner from './ErrorBanner';
+import { WalkthroughOverlay, TOUR_STEP_COUNT } from './WalkthroughOverlay';
 
 function safeSetItem(key: string, value: string): void {
   try { localStorage.setItem(key, value); }
@@ -23,6 +24,8 @@ export default function AppLayout() {
   const noteHistory            = useAppStore((s) => s.noteHistory);
   const theme                  = useAppStore((s) => s.theme);
 
+  const [tourStep, setTourStep] = useState<number | null>(null);
+
   const { start, stop, analyserRef } = useAudioEngine();
   usePitchDetector({ analyserRef });
 
@@ -33,6 +36,15 @@ export default function AppLayout() {
   function handleDismiss(): void {
     setOnboardingDismissed(true);
     safeSetItem('pianovora_onboarding_dismissed', 'true');
+    setTourStep(0);
+  }
+
+  function handleTourNext(): void {
+    setTourStep((s) => (s !== null && s < TOUR_STEP_COUNT - 1 ? s + 1 : null));
+  }
+
+  function handleTourDone(): void {
+    setTourStep(null);
   }
 
   return (
@@ -63,6 +75,14 @@ export default function AppLayout() {
 
       {!onboardingDismissed && (
         <OnboardingModal onDismiss={handleDismiss} />
+      )}
+
+      {tourStep !== null && (
+        <WalkthroughOverlay
+          step={tourStep}
+          onNext={handleTourNext}
+          onDone={handleTourDone}
+        />
       )}
     </div>
   );

@@ -20,7 +20,7 @@ vi.mock('@/features/keyboard/PianoKeyboard', () => ({
 
 vi.mock('@/features/audio/MicToggle', () => ({
   default: ({ onStart, onStop }: { onStart: () => void; onStop: () => void }) => (
-    <button data-testid="mic-toggle-mock" onClick={onStart} onBlur={onStop}>Mic</button>
+    <button data-testid="mic-toggle" onClick={onStart} onBlur={onStop}>Mic</button>
   ),
 }));
 
@@ -33,7 +33,18 @@ vi.mock('@/features/audio/SensitivitySlider', () => ({
 }));
 
 vi.mock('@/features/ui/ThemeSelector', () => ({
-  ThemeSelector: () => <div data-testid="theme-selector-mock" />,
+  ThemeSelector: () => <div data-testid="theme-selector" />,
+}));
+
+vi.mock('@/features/ui/WalkthroughOverlay', () => ({
+  WalkthroughOverlay: ({ step, onNext, onDone }: { step: number; onNext: () => void; onDone: () => void }) => (
+    <div data-testid="walkthrough-overlay-mock">
+      <span data-testid="tour-step">{step}</span>
+      <button data-testid="tour-next-btn" onClick={onNext}>Next</button>
+      <button data-testid="tour-done-btn" onClick={onDone}>Done</button>
+    </div>
+  ),
+  TOUR_STEP_COUNT: 2,
 }));
 
 import AppLayout from '@/features/ui/AppLayout';
@@ -156,6 +167,60 @@ describe('AppLayout', () => {
         fireEvent.click(screen.getByTestId('onboarding-dismiss-btn'));
       });
       expect(screen.queryByTestId('onboarding-modal')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('tour flow', () => {
+    it('does not render walkthrough before modal is dismissed', () => {
+      resetStore({ onboardingDismissed: false });
+      render(<AppLayout />);
+      expect(screen.queryByTestId('walkthrough-overlay-mock')).not.toBeInTheDocument();
+    });
+
+    it('renders walkthrough after "Got it" is clicked', () => {
+      resetStore({ onboardingDismissed: false });
+      render(<AppLayout />);
+      fireEvent.click(screen.getByTestId('onboarding-dismiss-btn'));
+      expect(screen.getByTestId('walkthrough-overlay-mock')).toBeInTheDocument();
+    });
+
+    it('starts tour on step 0', () => {
+      resetStore({ onboardingDismissed: false });
+      render(<AppLayout />);
+      fireEvent.click(screen.getByTestId('onboarding-dismiss-btn'));
+      expect(screen.getByTestId('tour-step').textContent).toBe('0');
+    });
+
+    it('clicking Next advances to step 1', () => {
+      resetStore({ onboardingDismissed: false });
+      render(<AppLayout />);
+      fireEvent.click(screen.getByTestId('onboarding-dismiss-btn'));
+      fireEvent.click(screen.getByTestId('tour-next-btn'));
+      expect(screen.getByTestId('tour-step').textContent).toBe('1');
+    });
+
+    it('clicking Next on last step closes walkthrough', () => {
+      resetStore({ onboardingDismissed: false });
+      render(<AppLayout />);
+      fireEvent.click(screen.getByTestId('onboarding-dismiss-btn'));
+      // advance to last step (step 1 of 2)
+      fireEvent.click(screen.getByTestId('tour-next-btn'));
+      fireEvent.click(screen.getByTestId('tour-next-btn'));
+      expect(screen.queryByTestId('walkthrough-overlay-mock')).not.toBeInTheDocument();
+    });
+
+    it('clicking Done closes walkthrough', () => {
+      resetStore({ onboardingDismissed: false });
+      render(<AppLayout />);
+      fireEvent.click(screen.getByTestId('onboarding-dismiss-btn'));
+      fireEvent.click(screen.getByTestId('tour-done-btn'));
+      expect(screen.queryByTestId('walkthrough-overlay-mock')).not.toBeInTheDocument();
+    });
+
+    it('does not render walkthrough when onboardingDismissed already true', () => {
+      resetStore({ onboardingDismissed: true });
+      render(<AppLayout />);
+      expect(screen.queryByTestId('walkthrough-overlay-mock')).not.toBeInTheDocument();
     });
   });
 
