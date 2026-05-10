@@ -3,13 +3,19 @@
 @tailwind utilities;
 
 :root {
-  /* Cyber theme (default) — overridden by ThemeProvider in Unit 3 */
+  /* Cyber theme (default) — overridden by ThemeProvider */
   --neon-white-key: #e0e0ff;
   --neon-black-key: #9090ff;
   --neon-accent: #00ffff;
   --neon-glow: rgba(0, 255, 255, 0.4);
   --bg-primary: #0a0a0f;
   --bg-surface: #12121a;
+
+  /* Piano key base colours (static — not theme-dependent) */
+  --key-white: #f0f0f0;
+  --key-black: #1c1c2e;
+  --key-label-colour: #333;
+  --glow-colour: #00f3ff;
 }
 
 * {

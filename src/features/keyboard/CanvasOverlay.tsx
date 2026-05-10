@@ -4,9 +4,10 @@ import { useSparkleAnimation } from './useSparkleAnimation';
 interface CanvasOverlayProps {
   activeKeyIndex: number | null;
   keyboardWidth:  number;
+  sparkleColour?: string;
 }
 
-export function CanvasOverlay({ activeKeyIndex, keyboardWidth }: CanvasOverlayProps) {
+export function CanvasOverlay({ activeKeyIndex, keyboardWidth, sparkleColour }: CanvasOverlayProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Keep canvas pixel dimensions in sync with container (NFR-P2: DPR scaling)
@@ -25,7 +26,7 @@ export function CanvasOverlay({ activeKeyIndex, keyboardWidth }: CanvasOverlayPr
     return () => observer.disconnect();
   }, []);
 
-  useSparkleAnimation({ canvasRef, activeKeyIndex, keyboardWidth });
+  useSparkleAnimation({ canvasRef, activeKeyIndex, keyboardWidth, sparkleColour });
 
   return (
     <canvas

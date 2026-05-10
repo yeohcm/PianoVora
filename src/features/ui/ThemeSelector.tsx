@@ -13,7 +13,7 @@ export function ThemeSelector() {
       data-testid="theme-selector"
       className="flex gap-2"
     >
-      {(['cyber', 'aurora', 'sunset'] as NeonTheme[]).map((t) => (
+      {(['cyber', 'aurora', 'sunset', 'rainbow'] as NeonTheme[]).map((t) => (
         <button
           key={t}
           onClick={() => setTheme(t)}

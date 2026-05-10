@@ -247,4 +247,52 @@ describe('PianoKeyboard', () => {
       expect(call.left).toBeGreaterThanOrEqual(0);
     });
   });
+
+  describe('rainbow theme key colours', () => {
+    beforeEach(() => {
+      useAppStore.setState({ theme: 'rainbow' });
+    });
+
+    it('inactive white key (key-0) has rainbow hsl fill', () => {
+      render(<PianoKeyboard />);
+      fireResize();
+      const key = screen.getByTestId('key-0');
+      // key-0 hue = round(0/87 * 360) = 0 → white key inactive = hsl(0deg, 80%, 92%)
+      expect(key.getAttribute('fill')).toBe('hsl(0deg, 80%, 92%)');
+    });
+
+    it('active white key has bright rainbow fill', () => {
+      render(<PianoKeyboard />);
+      fireResize();
+      act(() => { useAppStore.getState().setDetectedNote(makeNote(39)); }); // C4, white
+      const key = screen.getByTestId('key-39');
+      const hue = Math.round((39 / 87) * 360);
+      expect(key.getAttribute('fill')).toBe(`hsl(${hue}deg, 100%, 65%)`);
+    });
+
+    it('active black key has bright rainbow fill (55% lightness)', () => {
+      render(<PianoKeyboard />);
+      fireResize();
+      act(() => { useAppStore.getState().setDetectedNote(makeNote(40)); }); // C#4, black
+      const key = screen.getByTestId('key-40');
+      const hue = Math.round((40 / 87) * 360);
+      expect(key.getAttribute('fill')).toBe(`hsl(${hue}deg, 100%, 55%)`);
+    });
+
+    it('inactive black key has dark rainbow fill', () => {
+      render(<PianoKeyboard />);
+      fireResize();
+      const key = screen.getByTestId('key-1'); // A#0, black
+      const hue = Math.round((1 / 87) * 360);
+      expect(key.getAttribute('fill')).toBe(`hsl(${hue}deg, 90%, 22%)`);
+    });
+
+    it('reverts to CSS var fills when switching back to cyber', () => {
+      render(<PianoKeyboard />);
+      fireResize();
+      act(() => { useAppStore.getState().setTheme('cyber'); });
+      const key = screen.getByTestId('key-39');
+      expect(key.getAttribute('fill')).toBe('var(--key-white)');
+    });
+  });
 });

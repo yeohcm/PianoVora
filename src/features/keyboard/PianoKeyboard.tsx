@@ -9,9 +9,16 @@ import {
 import type { DetectedNote } from '../../shared/types';
 import { CanvasOverlay } from './CanvasOverlay';
 
+function rainbowFill(keyIndex: number, isBlack: boolean, isActive: boolean): string {
+  const hue = Math.round((keyIndex / 87) * 360);
+  if (isActive) return `hsl(${hue}deg, 100%, ${isBlack ? 55 : 65}%)`;
+  return isBlack ? `hsl(${hue}deg, 90%, 22%)` : `hsl(${hue}deg, 80%, 92%)`;
+}
+
 export function PianoKeyboard() {
   const detectedNote    = useAppStore((s) => s.detectedNote);
   const setDetectedNote = useAppStore((s) => s.setDetectedNote);
+  const theme           = useAppStore((s) => s.theme);
 
   const containerRef              = useRef<HTMLDivElement | null>(null);
   const [totalWidth, setTotalWidth] = useState(0);
@@ -102,7 +109,9 @@ export function PianoKeyboard() {
                     y={rect.y}
                     width={rect.width}
                     height={rect.height}
-                    fill={isActive ? 'var(--neon-white-key)' : 'var(--key-white)'}
+                    fill={theme === 'rainbow'
+                      ? rainbowFill(rect.keyIndex, false, isActive)
+                      : isActive ? 'var(--neon-white-key)' : 'var(--key-white)'}
                     stroke="#888"
                     strokeWidth={1}
                     role="button"
@@ -140,7 +149,11 @@ export function PianoKeyboard() {
                   y={rect.y}
                   width={rect.width}
                   height={rect.height}
-                  fill={isActive ? 'var(--neon-black-key)' : 'var(--key-black)'}
+                  fill={theme === 'rainbow'
+                    ? rainbowFill(rect.keyIndex, true, isActive)
+                    : isActive ? 'var(--neon-black-key)' : 'var(--key-black)'}
+                  stroke="#555"
+                  strokeWidth={0.5}
                   role="button"
                   tabIndex={0}
                   cursor="pointer"
@@ -173,6 +186,11 @@ export function PianoKeyboard() {
           <CanvasOverlay
             activeKeyIndex={activeKeyIndex}
             keyboardWidth={totalWidth}
+            sparkleColour={
+              theme === 'rainbow' && activeKeyIndex !== null
+                ? `hsl(${Math.round((activeKeyIndex / 87) * 360)}deg, 100%, 65%)`
+                : undefined
+            }
           />
         </>
       )}

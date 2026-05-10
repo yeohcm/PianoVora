@@ -15,6 +15,7 @@ interface SparkleAnimationOptions {
   canvasRef:      React.RefObject<HTMLCanvasElement | null>;
   activeKeyIndex: number | null;
   keyboardWidth:  number;
+  sparkleColour?: string;
 }
 
 const PARTICLE_COUNT = 12;
@@ -29,6 +30,7 @@ export function useSparkleAnimation({
   canvasRef,
   activeKeyIndex,
   keyboardWidth,
+  sparkleColour,
 }: SparkleAnimationOptions): void {
   const particlesRef      = useRef<SparkleParticle[]>([]);
   const animationFrameRef = useRef<number>(0);
@@ -93,8 +95,9 @@ export function useSparkleAnimation({
     const dpr    = window.devicePixelRatio;
     const spawnX = (rect.x + rect.width  / 2)   * dpr;
     const spawnY = (rect.y + rect.height * 0.3) * dpr;
-    const colour = getComputedStyle(document.documentElement)
+    const cssColour = getComputedStyle(document.documentElement)
       .getPropertyValue('--glow-colour').trim() || '#00f3ff';
+    const colour = sparkleColour ?? cssColour;
 
     const newParticles: SparkleParticle[] = Array.from({ length: PARTICLE_COUNT }, () => {
       const angle = Math.random() * 2 * Math.PI - Math.PI;
@@ -136,7 +139,7 @@ export function useSparkleAnimation({
     if (!animationFrameRef.current) {
       animationFrameRef.current = requestAnimationFrame(animationLoop);
     }
-  }, [activeKeyIndex, keyboardWidth, canvasRef, animationLoop]);
+  }, [activeKeyIndex, keyboardWidth, canvasRef, animationLoop, sparkleColour]);
 
   // Cleanup on unmount (NFR-R1)
   useEffect(() => {

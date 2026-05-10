@@ -46,4 +46,4 @@ export interface KeyRect {
 
 // ── Theme (Unit 3 — stub) ─────────────────────────────────────────────────
 
-export type NeonTheme = 'cyber' | 'aurora' | 'sunset';
+export type NeonTheme = 'cyber' | 'aurora' | 'sunset' | 'rainbow';

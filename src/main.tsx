@@ -1,4 +1,3 @@
-// Unit 1 stub — replaced by Unit 4 full composition
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';

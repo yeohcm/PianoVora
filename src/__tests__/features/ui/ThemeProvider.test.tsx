@@ -68,6 +68,20 @@ describe('ThemeProvider', () => {
     });
   });
 
+  describe('rainbow theme', () => {
+    it('sets --neon-accent to #ff00cc', () => {
+      render(<ThemeProvider><div /></ThemeProvider>);
+      act(() => { useAppStore.getState().setTheme('rainbow'); });
+      expect(getCSSVar('--neon-accent')).toBe('#ff00cc');
+    });
+
+    it('sets --glow-colour to #ff00cc', () => {
+      render(<ThemeProvider><div /></ThemeProvider>);
+      act(() => { useAppStore.getState().setTheme('rainbow'); });
+      expect(getCSSVar('--glow-colour')).toBe('#ff00cc');
+    });
+  });
+
   it('updates CSS vars again when theme switches back to cyber', () => {
     render(<ThemeProvider><div /></ThemeProvider>);
     act(() => { useAppStore.getState().setTheme('aurora'); });

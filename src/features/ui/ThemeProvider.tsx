@@ -33,6 +33,14 @@ export const THEME_DEFINITIONS: Record<NeonTheme, ThemeDefinition> = {
     '--glow-colour':    '#ff6b35',
     '--neon-accent':    '#ff6b35',
   },
+  // Per-key hue is computed in PianoKeyboard; CSS vars here cover non-keyboard UI
+  rainbow: {
+    id: 'rainbow', label: 'Rainbow',
+    '--neon-white-key': '#ff00cc',
+    '--neon-black-key': '#cc00ff',
+    '--glow-colour':    '#ff00cc',
+    '--neon-accent':    '#ff00cc',
+  },
 };
 
 interface ThemeProviderProps {
