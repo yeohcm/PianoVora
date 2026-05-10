@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Cyber theme (default) — overridden by ThemeProvider in Unit 3 */
+  --neon-white-key: #e0e0ff;
+  --neon-black-key: #9090ff;
+  --neon-accent: #00ffff;
+  --neon-glow: rgba(0, 255, 255, 0.4);
+  --bg-primary: #0a0a0f;
+  --bg-surface: #12121a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-primary);
+  color: var(--neon-white-key);
+  font-family: system-ui, -apple-system, sans-serif;
+}

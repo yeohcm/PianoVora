@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(New-Item *)",
+      "Bash(New-Item -ItemType Directory -Force -Path \"D:\\\\Projects\\\\PianoVora\\\\src\\\\features\\\\pitch\")",
+      "Bash(Out-Null)",
+      "PowerShell(Set-Location D:\\\\Projects\\\\PianoVora; $result = npx vitest run --reporter=verbose 2>&1; $result; Write-Output \"EXIT:$LASTEXITCODE\")"
+    ]
+  }
+}
