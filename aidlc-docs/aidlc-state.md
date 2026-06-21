@@ -31,7 +31,7 @@
 - **Keyboard Rendering**: SVG + Canvas overlay
 - **Styling**: Tailwind CSS + CSS custom properties
 - **Testing**: Vitest + React Testing Library + Playwright + fast-check (PBT)
-- **Deployment**: Netlify
+- **Deployment**: GitHub Pages
 
 ## Unit Breakdown
 - **Unit 1**: Audio Engine (getUserMedia, Web Audio API, noise gate, level meter)
