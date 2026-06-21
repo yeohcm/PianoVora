@@ -23,8 +23,10 @@ export function PianoKeyboard() {
   const containerRef              = useRef<HTMLDivElement | null>(null);
   const [totalWidth, setTotalWidth] = useState(0);
 
+  const layoutWidth = totalWidth > 0 ? Math.max(1200, totalWidth) : 0;
+
   // Memoised key geometry — recomputes only when container width changes (NFR-P3)
-  const allKeyRects = useMemo(() => getAllKeyGeometry(totalWidth), [totalWidth]);
+  const allKeyRects = useMemo(() => getAllKeyGeometry(layoutWidth), [layoutWidth]);
 
   const keyboardHeight = totalWidth > 0 ? (allKeyRects[0]?.height ?? 0) : 0;
 
@@ -42,7 +44,7 @@ export function PianoKeyboard() {
   // Scroll active key to centre (BR-29/30/31)
   useEffect(() => {
     if (!detectedNote || !containerRef.current || totalWidth === 0) return;
-    const rect = getKeyGeometry(detectedNote.keyIndex, totalWidth);
+    const rect = getKeyGeometry(detectedNote.keyIndex, layoutWidth);
     if (!rect) return;
     const keyMidX       = rect.x + rect.width / 2;
     const containerWidth = containerRef.current.clientWidth;
@@ -51,7 +53,7 @@ export function PianoKeyboard() {
       left:     Math.max(0, keyMidX - containerWidth / 2),
       behavior: reduced ? 'instant' : 'smooth',
     });
-  }, [detectedNote, totalWidth]);
+  }, [detectedNote, totalWidth, layoutWidth]);
 
   function handleKeyClick(keyIndex: number): void {
     const midiNote = keyIndex + 21;
@@ -76,7 +78,7 @@ export function PianoKeyboard() {
 
   const activeKeyIndex = detectedNote?.keyIndex ?? null;
   const activeRect     = activeKeyIndex !== null
-    ? getKeyGeometry(activeKeyIndex, totalWidth)
+    ? getKeyGeometry(activeKeyIndex, layoutWidth)
     : null;
 
   const whiteRects = allKeyRects.filter((r) => !r.isBlack);
@@ -85,6 +87,7 @@ export function PianoKeyboard() {
   return (
     <div
       ref={containerRef}
+      className="overflow-x-auto relative rounded-2xl border-4 border-[#1e1e2d] bg-[#0c0c16] shadow-2xl p-4 shadow-black/90"
       style={{ overflowX: 'auto', position: 'relative' }}
       data-testid="piano-keyboard-container"
     >
@@ -92,7 +95,7 @@ export function PianoKeyboard() {
       {totalWidth > 0 && (
         <>
           <svg
-            width={totalWidth}
+            width={layoutWidth}
             height={keyboardHeight}
             role="group"
             aria-label="Piano keyboard"
@@ -185,7 +188,7 @@ export function PianoKeyboard() {
 
           <CanvasOverlay
             activeKeyIndex={activeKeyIndex}
-            keyboardWidth={totalWidth}
+            keyboardWidth={layoutWidth}
             sparkleColour={
               theme === 'rainbow' && activeKeyIndex !== null
                 ? `hsl(${Math.round((activeKeyIndex / 87) * 360)}deg, 100%, 65%)`
