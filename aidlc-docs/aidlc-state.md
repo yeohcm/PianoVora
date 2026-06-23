@@ -2,13 +2,13 @@
 
 ## Project Information
 - **Project Name**: PianoVora
-- **Project Type**: Greenfield
+- **Project Type**: Brownfield
 - **Start Date**: 2026-05-09T00:00:00Z
-- **Current Stage**: OPERATIONS - COMPLETE
+- **Current Stage**: OPERATIONS - Operations (Complete)
 
 ## Workspace State
-- **Existing Code**: No
-- **Reverse Engineering Needed**: No
+- **Existing Code**: Yes
+- **Reverse Engineering Needed**: Yes
 - **Workspace Root**: D:\Projects\PianoVora
 
 ## Code Location Rules
@@ -21,7 +21,7 @@
 | Extension | Enabled | Mode | Decided At |
 |---|---|---|---|
 | Security Baseline | No | Disabled | Requirements Analysis |
-| Property-Based Testing | Yes (Partial) | PBT-02, PBT-03, PBT-07, PBT-08, PBT-09 only | Requirements Analysis |
+| Property-Based Testing | No | Disabled | Requirements Analysis |
 
 ## Key Technology Decisions
 - **Language**: TypeScript (strict mode)
@@ -38,36 +38,22 @@
 - **Unit 2**: Pitch Detection (pitchy, frequency-to-MIDI, note name, Zustand store)
 - **Unit 3**: Piano Keyboard & Visual Feedback (SVG layout, Canvas animation, themes)
 - **Unit 4**: UI Shell & Features (layout, controls, modals, error states, Netlify config)
+- **Unit 5**: Sound Synthesis & Mode Controls (oscillator tone generation, Synth vs Mic inputMode)
 
-## Stage Progress
+## Stage Progress (Mode Toggling Fix)
 
 ### INCEPTION PHASE
-- [x] Workspace Detection — COMPLETE (Greenfield)
-- [x] Reverse Engineering — SKIPPED (Greenfield)
-- [x] Requirements Analysis — COMPLETE
-- [x] User Stories — COMPLETE (10 stories, 4 personas, Feature-Based, Given/When/Then)
-- [x] Workflow Planning — COMPLETE
-- [x] Application Design — COMPLETE (14 components, 3 Zustand slices, shared geometry module)
-- [x] Units Generation — COMPLETE (4 units, single package, centralised tests)
+- [x] Workspace Detection — COMPLETE (Brownfield)
+- [x] Reverse Engineering — SKIPPED (stale check passed, current artifacts exist)
+- [x] Requirements Analysis — COMPLETE (2026-06-23T22:04:53+12:00)
+- [x] Workflow Planning — COMPLETE (2026-06-23T22:05:35Z)
+- [ ] Application Design — SKIP (no architectural changes)
+- [ ] Units Planning — SKIP
+- [ ] Units Generation — SKIP
 
 ### CONSTRUCTION PHASE
-- [x] Unit 1: Audio Engine — Functional Design COMPLETE
-- [x] Unit 1: Audio Engine — NFR Requirements COMPLETE
-- [x] Unit 1: Audio Engine — NFR Design COMPLETE
-- [x] Unit 1: Audio Engine — Code Generation COMPLETE
-- [x] Unit 2: Pitch Detection — Functional Design COMPLETE
-- [x] Unit 2: Pitch Detection — NFR Requirements COMPLETE
-- [x] Unit 2: Pitch Detection — NFR Design COMPLETE
-- [x] Unit 2: Pitch Detection — Code Generation COMPLETE
-- [x] Unit 3: Keyboard & Visual Feedback — Functional Design COMPLETE
-- [x] Unit 3: Keyboard & Visual Feedback — NFR Requirements COMPLETE
-- [x] Unit 3: Keyboard & Visual Feedback — NFR Design COMPLETE
-- [x] Unit 3: Keyboard & Visual Feedback — Code Generation COMPLETE
-- [x] Unit 4: UI Shell & Features — Functional Design COMPLETE
-- [x] Unit 4: UI Shell & Features — NFR Requirements COMPLETE
-- [x] Unit 4: UI Shell & Features — NFR Design COMPLETE
-- [x] Unit 4: UI Shell & Features — Code Generation COMPLETE
-- [x] Build and Test — COMPLETE
+- [x] Code Generation — COMPLETE (2026-06-23T22:12:35Z)
+- [x] Build and Test — COMPLETE (2026-06-23T22:15:15Z)
 
 ### OPERATIONS PHASE
-- [x] Operations — COMPLETE (Bypassed pre-push validation and created PR #1)
+- [x] Operations — COMPLETE (2026-06-23T22:16:32+12:00)

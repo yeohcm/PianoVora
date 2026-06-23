@@ -9,6 +9,8 @@ interface SparkleParticle {
   radius:  number;
   opacity: number;
   colour:  string;
+  gravity:  number;
+  fadeRate: number;
 }
 
 interface SparkleAnimationOptions {
@@ -16,21 +18,37 @@ interface SparkleAnimationOptions {
   activeKeyIndex: number | null;
   keyboardWidth:  number;
   sparkleColour?: string;
+  spawnCenter?:   boolean;
+  particleCount?: number;
+  minSpeed?:      number;
+  maxSpeed?:      number;
+  minRadius?:     number;
+  maxRadius?:     number;
+  gravity?:       number;
+  fadeDuration?:  number;
 }
 
-const PARTICLE_COUNT = 12;
-const GRAVITY        = 0.15;
-const FADE_RATE      = 1 / (0.8 * 60);
-const MIN_SPEED      = 1.5;
-const MAX_SPEED      = 4.0;
-const MIN_RADIUS     = 3;
-const MAX_RADIUS     = 10;
+const DEFAULT_PARTICLE_COUNT = 12;
+const DEFAULT_GRAVITY        = 0.15;
+const DEFAULT_MIN_SPEED      = 1.5;
+const DEFAULT_MAX_SPEED      = 4.0;
+const DEFAULT_MIN_RADIUS     = 3;
+const DEFAULT_MAX_RADIUS     = 10;
+const DEFAULT_FADE_DURATION  = 0.8;
 
 export function useSparkleAnimation({
   canvasRef,
   activeKeyIndex,
   keyboardWidth,
   sparkleColour,
+  spawnCenter = false,
+  particleCount,
+  minSpeed,
+  maxSpeed,
+  minRadius,
+  maxRadius,
+  gravity,
+  fadeDuration,
 }: SparkleAnimationOptions): void {
   const particlesRef      = useRef<SparkleParticle[]>([]);
   const animationFrameRef = useRef<number>(0);
@@ -46,10 +64,10 @@ export function useSparkleAnimation({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     particlesRef.current = particlesRef.current.filter((p) => {
-      p.vy      += GRAVITY * dpr;
+      p.vy      += p.gravity * dpr;
       p.x       += p.vx;
       p.y       += p.vy;
-      p.opacity -= FADE_RATE;
+      p.opacity -= p.fadeRate;
       if (p.opacity <= 0) return false;
 
       ctx.save();
@@ -86,30 +104,48 @@ export function useSparkleAnimation({
     if (activeKeyIndex === prevKeyIndexRef.current) return;
     prevKeyIndexRef.current = activeKeyIndex;
 
-    const rect = getKeyGeometry(activeKeyIndex, keyboardWidth);
-    if (!rect) return;
-
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const dpr    = window.devicePixelRatio;
-    const spawnX = (rect.x + rect.width  / 2)   * dpr;
-    const spawnY = (rect.y + rect.height * 0.3) * dpr;
+    let spawnX = 0;
+    let spawnY = 0;
+
+    if (spawnCenter) {
+      spawnX = canvas.width / 2;
+      spawnY = canvas.height / 2;
+    } else {
+      const rect = getKeyGeometry(activeKeyIndex, keyboardWidth);
+      if (!rect) return;
+      spawnX = (rect.x + rect.width  / 2)   * dpr;
+      spawnY = (rect.y + rect.height * 0.3) * dpr;
+    }
+
     const cssColour = getComputedStyle(document.documentElement)
       .getPropertyValue('--glow-colour').trim() || '#00f3ff';
     const colour = sparkleColour ?? cssColour;
 
-    const newParticles: SparkleParticle[] = Array.from({ length: PARTICLE_COUNT }, () => {
+    const count = particleCount ?? DEFAULT_PARTICLE_COUNT;
+    const speedMin = minSpeed ?? DEFAULT_MIN_SPEED;
+    const speedMax = maxSpeed ?? DEFAULT_MAX_SPEED;
+    const radMin = minRadius ?? DEFAULT_MIN_RADIUS;
+    const radMax = maxRadius ?? DEFAULT_MAX_RADIUS;
+    const grav = gravity ?? DEFAULT_GRAVITY;
+    const fadeRate = 1 / ((fadeDuration ?? DEFAULT_FADE_DURATION) * 60);
+
+    const newParticles: SparkleParticle[] = Array.from({ length: count }, () => {
       const angle = Math.random() * 2 * Math.PI - Math.PI;
-      const speed = MIN_SPEED + Math.random() * (MAX_SPEED - MIN_SPEED);
+      const speed = speedMin + Math.random() * (speedMax - speedMin);
       return {
         x:       spawnX,
         y:       spawnY,
         vx:      Math.cos(angle) * speed * dpr,
         vy:      (Math.sin(angle) * speed - 2.0) * dpr,
-        radius:  (MIN_RADIUS + Math.random() * (MAX_RADIUS - MIN_RADIUS)) * dpr,
+        radius:  (radMin + Math.random() * (radMax - radMin)) * dpr,
         opacity: 1.0,
         colour,
+        gravity: grav,
+        fadeRate,
       };
     });
 
@@ -139,7 +175,21 @@ export function useSparkleAnimation({
     if (!animationFrameRef.current) {
       animationFrameRef.current = requestAnimationFrame(animationLoop);
     }
-  }, [activeKeyIndex, keyboardWidth, canvasRef, animationLoop, sparkleColour]);
+  }, [
+    activeKeyIndex,
+    keyboardWidth,
+    canvasRef,
+    animationLoop,
+    sparkleColour,
+    spawnCenter,
+    particleCount,
+    minSpeed,
+    maxSpeed,
+    minRadius,
+    maxRadius,
+    gravity,
+    fadeDuration,
+  ]);
 
   // Cleanup on unmount (NFR-R1)
   useEffect(() => {

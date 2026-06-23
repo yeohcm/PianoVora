@@ -13,12 +13,14 @@ export interface AudioState {
   permissionState: PermissionState;
   /** EMA-smoothed RMS amplitude, 0.0–1.0 */
   audioLevel: number;
+  inputMode: 'mic' | 'synth';
   /** Noise gate threshold, 0.001–0.1 */
   noiseGateThreshold: number;
   setIsListening: (v: boolean) => void;
   setPermissionState: (v: PermissionState) => void;
   setAudioLevel: (v: number) => void;
   setNoiseGateThreshold: (v: number) => void;
+  setInputMode: (mode: 'mic' | 'synth') => void;
 }
 
 // ── Pitch Detection (Unit 2 — stub) ───────────────────────────────────────

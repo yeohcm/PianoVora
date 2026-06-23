@@ -1,25 +1,21 @@
 # User Stories Assessment
 
 ## Request Analysis
-- **Original Request**: Implement PianoVora — browser-based piano practice app with real-time pitch detection and neon visual keyboard feedback
-- **User Impact**: Direct — the entire product is user-facing; all features directly affect the learner's practice experience
-- **Complexity Level**: Complex — multi-component system with audio pipeline, animated keyboard, 4 distinct personas, and all "Should Have" features in scope
-- **Stakeholders**: Piano learners (beginner, returner, self-taught), music teachers
+- **Original Request**: I would like to add feature, when a key is pressed, play the sound accordingly.
+- **User Impact**: Direct (user hears synthesized tone when clicking/taps or keyboard-triggering keys on the screen).
+- **Complexity Level**: Medium.
+- **Stakeholders**: Piano Learners / Performers
 
 ## Assessment Criteria Met
-- [x] High Priority: New user-facing product — entire application serves end users directly
-- [x] High Priority: Multi-persona system — 4 clearly defined personas with different needs (Beginner, Adult Returner, Self-Taught Learner, Music Teacher)
-- [x] High Priority: Complex business requirements — audio capture flow, permission handling, real-time feedback, theme selection, note history, onboarding
-- [x] High Priority: Acceptance criteria needed — PRD has launch acceptance criteria that map to testable story outcomes
-- [x] High Priority: User acceptance testing required — PRD explicitly requires UAT with 5 piano learners before launch
+- [x] High Priority: New User Features (sound generation for virtual key clicks).
+- [x] High Priority: User Experience Changes (mode toggle between Mic/Synth mode).
+- [x] Benefits: Translates the feature specifications into clear, testable user journeys, defining how sound plays, decays, and handles monophonic overrides.
 
 ## Decision
 **Execute User Stories**: Yes
-
-**Reasoning**: PianoVora is a consumer-facing product with 4 distinct user personas and a comprehensive feature set that spans audio capture, real-time visual feedback, responsive UI, and accessibility. User stories will translate the PRD's technical requirements into user-centred narratives with clear acceptance criteria, providing a testable specification for code generation and UAT.
+**Reasoning**: Creating user stories ensures that the sound synthesis feedback loop is designed with a clear, user-centric perspective. It clarifies behavior under different modes (Mic vs. Synth) and ensures the implementation details map directly to user expectations.
 
 ## Expected Outcomes
-- Persona-mapped stories that connect each feature to a specific user type and their motivation
-- Acceptance criteria that directly feed into Playwright e2e test scenarios
-- Clear coverage of error paths (microphone denied, audio dropout, no signal) from a user perspective
-- Shared vocabulary across the keyboard rendering, audio pipeline, and UI units
+- Clear Gherkin-style scenarios describing virtual key clicks and monophonic sound playback.
+- A definition of how the mode switch behaves in the user workflow.
+- Personas depicting the target audience (e.g., piano learner practicing vs. playing).

@@ -498,4 +498,454 @@
 
 ---
 
+---
 
+## Workspace Detection — Start of Key Press Sound Feature
+**Timestamp**: 2026-06-23T19:01:21+12:00
+**User Input**: "I would like to add feature, when a key is pressed, play the sound accordingly."
+**AI Response**: Initializing Workspace Detection stage for the key press sound feature. Showing welcome message and scanning the codebase.
+**Context**: Workspace Detection stage start for the new feature.
+
+---
+
+## Reverse Engineering — Start of Key Press Sound Feature
+**Timestamp**: 2026-06-23T19:03:15+12:00
+**User Input**: N/A (automatic transition from Workspace Detection)
+**AI Response**: Automatically transitioned to the Reverse Engineering stage. Starting multi-package discovery and code analysis to generate documentation.
+**Context**: Reverse Engineering stage start for the new feature.
+
+---
+
+## Reverse Engineering — COMPLETE / Requirements Analysis Starts
+**Timestamp**: 2026-06-23T19:05:20+12:00
+**User Input**: "approve"
+**AI Response**: Received approval for the Reverse Engineering stage. Transitioning to the Requirements Analysis stage to analyze and document requirements for the new key press sound feature.
+**Context**: Awaiting Requirements Analysis execution.
+
+---
+
+## Requirements Analysis — Clarifying Questions Answered
+**Timestamp**: 2026-06-23T19:10:37+12:00
+**User Input**: "done"
+**AI Response**: Read and analyzed `requirement-verification-questions.md`. User selected: Q1=B (Security disabled), Q2=C (PBT disabled), Q3=A (Virtual key clicks trigger sound), Q4=A (Web Audio API oscillators), Q5=have a switch button to switch the mode (Feedback prevention), Q6=A (Monophonic). Created clarification question to refine mode switch behavior.
+**Context**: Awaiting clarification on feedback prevention mode switch.
+
+---
+
+## Requirements Analysis — Clarification Questions Answered
+**Timestamp**: 2026-06-23T19:11:42+12:00
+**User Input**: "done"
+**AI Response**: Read and analyzed `requirement-verification-clarification-questions.md`. User selected: Q1=A (Toggle between Mic Mode and Synth Mode to prevent feedback). Proceeding to generate the updated Requirements Document.
+**Context**: Awaiting Requirements Document creation.
+
+---
+
+## Requirements Analysis — COMPLETE
+**Timestamp**: 2026-06-23T19:12:12Z
+**User Input**: N/A (stage completion)
+**AI Response**: Requirements analysis complete. Created v1.1 `requirements.md` in workspace. Proceeding to User Stories.
+**Context**: Transitioning to User Stories.
+
+---
+
+## User Stories — Planning Start
+**Timestamp**: 2026-06-23T19:12:48Z
+**User Input**: N/A (automatic transition from Requirements Analysis)
+**AI Response**: Generated user story planning assessment and saved `story-generation-plan.md` in workspace. Presenting plan to user for answers.
+**Context**: Awaiting user answers on story plan.
+
+---
+
+## User Stories — Plan APPROVED
+**Timestamp**: 2026-06-23T19:17:42Z
+**User Input**: "done"
+**AI Response**: Read and analyzed `story-generation-plan.md`. User selected: Q1=A (Feature-Based organization), Q2=A (Gherkin syntax), Q3=A (Adapt existing personas). Proceeding to execute Part 2 - Generation of stories and personas.
+**Context**: Executing User Stories Part 2.
+
+---
+
+## User Stories — COMPLETE
+**Timestamp**: 2026-06-23T19:18:30Z
+**User Input**: N/A (stage completion)
+**AI Response**: User stories generation complete. Created FEAT-11 in `stories.md` and adapted personas in `personas.md`. Proceeding to Workflow Planning.
+**Context**: Transitioning to Workflow Planning.
+
+---
+
+## User Stories — APPROVED / Workflow Planning Starts
+**Timestamp**: 2026-06-23T19:19:20Z
+**User Input**: "approve"
+**AI Response**: Received approval for the User Stories stage. Transitioning to the Workflow Planning stage to create the execution plan.
+**Context**: Workflow Planning stage begins.
+
+---
+
+## Workflow Planning — APPROVED / Code Generation Starts
+**Timestamp**: 2026-06-23T19:20:59Z
+**User Input**: "approve. create a new branch from main and pull latest changes"
+**AI Response**: Received approval for the Workflow Planning stage. Transitioning to the Construction phase (Code Generation). Setting up a new git branch from main and pulling latest changes.
+---
+**AI Response**: Generated nfr-requirements.md and tech-stack-decisions.md. Key decisions: Q1=A (try/catch localStorage guard, safeGetItem/safeSetItem helpers), Q2=C (skip Playwright v1), Q3=A (Vite defaults, no manualChunks).
+**Context**: CONSTRUCTION PHASE -- Unit 4 NFR Requirements complete. Proceeding to NFR Design.
+
+---
+
+## Unit 4: UI Shell & Features — NFR Requirements APPROVED
+**Timestamp**: 2026-05-10T03:00:00Z
+**User Input**: "approve"
+**AI Response**: Proceeding to Unit 4 NFR Design.
+**Context**: CONSTRUCTION PHASE -- Unit 4 NFR Design begins.
+
+---
+
+## Unit 4: UI Shell & Features — NFR Design Questions Answered
+**Timestamp**: 2026-05-10T03:15:00Z
+**User Input**: "B,A"
+**AI Response**: Q1=B (Escape suppressed with preventDefault — "Got it" only dismiss path). Q2=A (localStorage read at module load inside createUiSlice — zero flash-of-modal). Generated nfr-design-patterns.md (6 patterns) and logical-components.md (7 logical components).
+**Context**: CONSTRUCTION PHASE — Unit 4 NFR Design complete.
+
+---
+
+## Unit 4: UI Shell & Features — NFR Design COMPLETE
+**Timestamp**: 2026-05-10T03:20:00Z
+**User Input**: N/A (stage completion)
+**AI Response**: Plan checkboxes updated [x]. aidlc-state.md updated. Presenting NFR Design completion message.
+**Context**: CONSTRUCTION PHASE — awaiting approval to proceed to Unit 4 Code Generation.
+
+---
+
+## Unit 4: UI Shell & Features — NFR Design APPROVED / Code Generation Starts
+**Timestamp**: 2026-05-10T03:30:00Z
+**User Input**: "continue"
+**AI Response**: Proceeding to Unit 4 Code Generation. Reading existing source files. Generating code generation plan.
+**Context**: CONSTRUCTION PHASE — Unit 4 Code Generation Part 1 (Planning) begins.
+
+---
+
+## Unit 4: UI Shell & Features — Code Generation Plan APPROVED
+**Timestamp**: 2026-05-10T03:45:00Z
+**User Input**: "approve"
+**AI Response**: Executing code generation plan. Creating/modifying 14 files (4 source modifications, 4 new source files, 2 deployment files, 4 new test files). Fixed TypeScript export mismatches (named exports: ThemeProvider, ThemeSelector, PianoKeyboard) and vi.mock named-export alignment in AppLayout.test.tsx.
+**Context**: CONSTRUCTION PHASE — Unit 4 Code Generation Part 2 (Generation) complete.
+
+---
+
+## Unit 4: UI Shell & Features — Code Generation COMPLETE
+**Timestamp**: 2026-05-10T04:00:00Z
+**User Input**: N/A (stage completion)
+**AI Response**: Quality gates passed: tsc clean, lint clean, build 173KB/57KB gzipped, 214/214 tests (16 files). Plan checkboxes updated. aidlc-state.md updated to Code Generation COMPLETE.
+**Context**: CONSTRUCTION PHASE — all 4 units complete. Proceeding to Build and Test phase.
+
+---
+
+## Build and Test — Start
+**Timestamp**: 2026-05-10T04:05:00Z
+**User Input**: "continue"
+**AI Response**: Proceeding to Build and Test phase. Generating instruction files.
+**Context**: CONSTRUCTION PHASE — Build and Test stage begins.
+
+---
+
+## Build and Test — COMPLETE
+**Timestamp**: 2026-05-10T04:15:00Z
+**User Input**: N/A (stage completion)
+**Build Status**: Success (173KB / 57KB gzipped, ~1.5s build time)
+**Test Status**: Pass — 214/214 unit tests (16 files)
+**Files Generated**:
+- build-instructions.md
+- unit-test-instructions.md
+- integration-test-instructions.md
+- performance-test-instructions.md
+- build-and-test-summary.md
+**Context**: CONSTRUCTION PHASE complete. All 4 units built and tested. aidlc-state.md updated to Build and Test COMPLETE.
+
+---
+
+## Build and Test — APPROVED
+**Timestamp**: 2026-05-10T04:20:00Z
+**User Input**: "Approve"
+**AI Response**: Proceeding to Operations phase (placeholder).
+**Context**: OPERATIONS PHASE begins.
+
+---
+
+## Workspace Detection & Review Initialization
+**Timestamp**: 2026-06-21T11:09:19Z
+**User Input**: "Workspace boundary (important):"
+**AI Response**: Initiated workspace analysis and examined 'no-mistakes' daemon configuration and pipeline status.
+**Context**: OPERATIONS PHASE — review step started by daemon.
+
+---
+
+## Pipeline Bypass and Pull Request Creation
+**Timestamp**: 2026-06-21T11:17:09Z
+**User Input**: "skip pipeline test and push change and create pr"
+**AI Response**: Bypassed the local 'no-mistakes' pre-push validation by pushing changes directly to the remote 'origin' branch and successfully created GitHub Pull Request #1.
+**Context**: OPERATIONS PHASE — manual override to skip pipeline and publish PR.
+
+---
+
+## GitHub Pages Deployment Setup
+**Timestamp**: 2026-06-21T11:25:04Z
+**User Input**: "the change on build and publish to github pages are missing"
+**AI Response**: Added base path for GitHub Pages to vite.config.ts, created .github/workflows/deploy.yml to build and publish the app to GitHub Pages, updated state tracking docs, and pushed these changes to update the PR.
+**Context**: OPERATIONS PHASE — manual configuration of GitHub Pages deployment pipeline.
+
+---
+
+---
+
+## Workspace Detection — Start of Key Press Sound Feature
+**Timestamp**: 2026-06-23T19:01:21+12:00
+**User Input**: "I would like to add feature, when a key is pressed, play the sound accordingly."
+**AI Response**: Initializing Workspace Detection stage for the key press sound feature. Showing welcome message and scanning the codebase.
+**Context**: Workspace Detection stage start for the new feature.
+
+---
+
+## Reverse Engineering — Start of Key Press Sound Feature
+**Timestamp**: 2026-06-23T19:03:15+12:00
+**User Input**: N/A (automatic transition from Workspace Detection)
+**AI Response**: Automatically transitioned to the Reverse Engineering stage. Starting multi-package discovery and code analysis to generate documentation.
+**Context**: Reverse Engineering stage start for the new feature.
+
+---
+
+## Reverse Engineering — COMPLETE / Requirements Analysis Starts
+**Timestamp**: 2026-06-23T19:05:20+12:00
+**User Input**: "approve"
+**AI Response**: Received approval for the Reverse Engineering stage. Transitioning to the Requirements Analysis stage to analyze and document requirements for the new key press sound feature.
+**Context**: Awaiting Requirements Analysis execution.
+
+---
+
+## Requirements Analysis — Clarifying Questions Answered
+**Timestamp**: 2026-06-23T19:10:37+12:00
+**User Input**: "done"
+**AI Response**: Read and analyzed `requirement-verification-questions.md`. User selected: Q1=B (Security disabled), Q2=C (PBT disabled), Q3=A (Virtual key clicks trigger sound), Q4=A (Web Audio API oscillators), Q5=have a switch button to switch the mode (Feedback prevention), Q6=A (Monophonic). Created clarification question to refine mode switch behavior.
+**Context**: Awaiting clarification on feedback prevention mode switch.
+
+---
+
+## Requirements Analysis — Clarification Questions Answered
+**Timestamp**: 2026-06-23T19:11:42+12:00
+**User Input**: "done"
+**AI Response**: Read and analyzed `requirement-verification-clarification-questions.md`. User selected: Q1=A (Toggle between Mic Mode and Synth Mode to prevent feedback). Proceeding to generate the updated Requirements Document.
+**Context**: Awaiting Requirements Document creation.
+
+---
+
+## Requirements Analysis — COMPLETE
+**Timestamp**: 2026-06-23T19:12:12Z
+**User Input**: N/A (stage completion)
+**AI Response**: Requirements analysis complete. Created v1.1 `requirements.md` in workspace. Proceeding to User Stories.
+**Context**: Transitioning to User Stories.
+
+---
+
+## User Stories — Planning Start
+**Timestamp**: 2026-06-23T19:12:48Z
+**User Input**: N/A (automatic transition from Requirements Analysis)
+**AI Response**: Generated user story planning assessment and saved `story-generation-plan.md` in workspace. Presenting plan to user for answers.
+**Context**: Awaiting user answers on story plan.
+
+---
+
+## User Stories — Plan APPROVED
+**Timestamp**: 2026-06-23T19:17:42Z
+**User Input**: "done"
+**AI Response**: Read and analyzed `story-generation-plan.md`. User selected: Q1=A (Feature-Based organization), Q2=A (Gherkin syntax), Q3=A (Adapt existing personas). Proceeding to execute Part 2 - Generation of stories and personas.
+**Context**: Executing User Stories Part 2.
+
+---
+
+## User Stories — COMPLETE
+**Timestamp**: 2026-06-23T19:18:30Z
+**User Input**: N/A (stage completion)
+**AI Response**: User stories generation complete. Created FEAT-11 in `stories.md` and adapted personas in `personas.md`. Proceeding to Workflow Planning.
+**Context**: Transitioning to Workflow Planning.
+
+---
+
+## User Stories — APPROVED / Workflow Planning Starts
+**Timestamp**: 2026-06-23T19:19:20Z
+**User Input**: "approve"
+**AI Response**: Received approval for the User Stories stage. Transitioning to the Workflow Planning stage to create the execution plan.
+**Context**: Workflow Planning stage begins.
+
+---
+
+## Workflow Planning — APPROVED / Code Generation Starts
+**Timestamp**: 2026-06-23T19:20:59Z
+**User Input**: "approve. create a new branch from main and pull latest changes"
+**AI Response**: Received approval for the Workflow Planning stage. Transitioning to the Construction phase (Code Generation). Setting up a new git branch from main and pulling latest changes.
+---
+
+## Unit 5 Code Generation — Plan Created
+**Timestamp**: 2026-06-23T19:22:15Z
+**User Input**: N/A (automatic stage progression)
+**AI Response**: Created and saved `unit-5-code-generation-plan.md` in workspace. Presenting plan to user for approval.
+**Context**: Awaiting user approval of Unit 5 Code Generation Plan.
+
+---
+
+## Unit 5 Code Generation — Plan APPROVED / Completed
+**Timestamp**: 2026-06-23T19:22:52Z
+**User Input**: "approve"
+**AI Response**: Received approval for the Unit 5 Code Generation Plan. Resumed execution from compaction. Implemented AppLayout mode segmented toggle, disabled/enabled controls dynamically, and added standby HUD text/visual feedback. Wrote unit and integration tests, fixed context-caching issue, and verified all 264 tests passed successfully.
+**Context**: Completed code changes and test verification for Unit 5.
+
+---
+
+## Build and Test Stage
+**Timestamp**: 2026-06-23T19:32:45Z
+**Build Status**: Success
+**Test Status**: Pass
+**Files Generated**:
+- build-instructions.md
+- unit-test-instructions.md
+- integration-test-instructions.md
+- performance-test-instructions.md
+- build-and-test-summary.md
+
+---
+
+## Operations Stage
+**Timestamp**: 2026-06-23T21:22:20+12:00
+**User Input**: "approve"
+**AI Response**: Received approval for the Build and Test stage. Transitions to Operations phase. Since the Operations stage is a placeholder in the current AI-DLC specifications, the workflow ends successfully.
+**Context**: Completed all project features, builds, tests, and lifecycle steps.
+
+---
+
+## HUD Sparkle & Color Adjustments Stage
+**Timestamp**: 2026-06-23T21:27:50+12:00
+**User Input**: "next, make the sparkle animation appear in the middle of the box as well for both mic and synth mode" / "the sparle color should match the color mode, the middle box also should match the mode"
+**AI Response**: Updated useSparkleAnimation hook with optional spawnCenter parameter to trigger canvas-centered sparkles. Created HudCanvasOverlay component and integrated it inside the HUD visualizer box. Computed activeColor dynamically to align HUD borders, text shadows, background gradients, and sparkles to the current theme (and dynamic HSL key colors in rainbow mode). Verified build and test suite regressions.
+**Context**: Added visual feedback feature and color synchronization for the Note HUD.
+
+---
+
+## Mobile Navigation Controls Toggle Stage
+**Timestamp**: 2026-06-23T21:32:00+12:00
+**User Input**: "in mobile mode, allow menu to be hiden"
+**AI Response**: Added menuOpen navigation state in AppLayout.tsx. Created responsive hamburger and close toggles in the header, visible on viewport sizes below small (sm:hidden). Bound the toggled class states to hide/show the header controls drawer dynamically. Added test specs in AppLayout.test.tsx and verified that all 266 tests pass successfully.
+**Context**: Implemented responsive navigation controls menu for mobile screen widths.
+
+---
+
+## Responsive Menu Buttons and Controls Stage
+**Timestamp**: 2026-06-23T21:45:10+12:00
+**User Input**: "make the buttons and controls in the menu mobile responsive"
+**AI Response**: Refactored ThemeSelector.tsx to utilize clean Tailwind CSS grid-cols-2 classes instead of rigid inline display flex properties, enabling buttons to stack cleanly on mobile. Modified AppLayout.tsx to apply w-full block styles to Mode switch, Audio Input Group, and Theme Selector wrappers on mobile width viewports, ensuring they occupy and stretch across screen space neatly. Verified 266 passing test suites and production build compiling successfully.
+**Context**: Added responsive styles to header drawer menu buttons and controls.
+
+---
+
+## HUD Sparkle Container Positioning Stage
+**Timestamp**: 2026-06-23T21:46:40+12:00
+**User Input**: "make the sparkle appear outside the box"
+**AI Response**: Relocated HudCanvasOverlay from inside the overflow-hidden visualizer box to the parent container box in AppLayout.tsx. Applied relative positioning class to the parent wrapper, allowing sparkles to expand and render past the borders of the visualizer box without clipping. Verified 266 passing test specs and production build compiling successfully.
+**Context**: Moved HUD sparkle overlay outside the overflow-hidden box.
+
+---
+
+## Sparkle Animation Size Customization Stage
+**Timestamp**: 2026-06-23T21:48:40+12:00
+**User Input**: "make the animation bigger that cover wider arae"
+**AI Response**: Expanded the useSparkleAnimation hook to accept physics configuration overrides (particleCount, minSpeed, maxSpeed, minRadius, maxRadius, gravity, and fadeDuration) on each particle. Modified HudCanvasOverlay.tsx to apply wider particle parameters (particleCount: 32, maxSpeed: 7.5, maxRadius: 15, gravity: 0.08, fadeDuration: 1.2), causing Note HUD sparkles to float further, expand larger, and cover a wider visual area. Verified 266 passing test specs and production build compiling successfully.
+**Context**: Configured larger and wider particle parameters for the Note HUD sparkle animation.
+
+---
+
+## Workspace Detection — Mode Toggling Fix
+**Timestamp**: 2026-06-23T21:53:01+12:00
+**User Input**: "switching from synth back to mic mode, it is not working"
+**AI Response**: Initiated workspace detection. Scanned directory and loaded existing state. Proceeding to Requirements Analysis to fix the mode toggle bug.
+**Context**: INCEPTION PHASE — Workspace Detection stage for the mode toggling bug.
+
+---
+
+## Requirements Analysis — Mode Toggling Fix Complete
+**Timestamp**: 2026-06-23T21:54:15+12:00
+**User Input**: N/A (stage completion)
+**AI Response**: Created requirements.md for mode toggling fix. Presenting Requirements Analysis completion message.
+**Context**: INCEPTION PHASE — Requirements Analysis stage complete. Awaiting user approval to proceed to Workflow Planning.
+
+---
+
+## Requirements Analysis — Mode Toggling Fix Approved / Workflow Planning Starts
+**Timestamp**: 2026-06-23T22:04:53+12:00
+**User Input**: "approve"
+**AI Response**: Received approval for the Requirements Analysis stage. Transitioning to the Workflow Planning stage to create the execution plan.
+**Context**: Workflow Planning stage begins.
+
+---
+
+## Workflow Planning — Mode Toggling Fix Complete
+**Timestamp**: 2026-06-23T22:05:35Z
+**User Input**: N/A (stage completion)
+**AI Response**: Created execution-plan.md for mode toggling fix. Presenting Workflow Planning completion message.
+**Context**: INCEPTION PHASE — Workflow Planning stage complete. Awaiting user approval to proceed to Code Generation.
+
+---
+
+## Workflow Planning — Mode Toggling Fix Approved / Code Generation Starts
+**Timestamp**: 2026-06-23T22:06:21+12:00
+**User Input**: "approve"
+**AI Response**: Received approval for the Workflow Planning stage. Transitioning to the Construction phase (Code Generation) and starting Part 1: Planning.
+**Context**: CONSTRUCTION PHASE — Code Generation Part 1 (Planning) begins.
+
+---
+
+## Code Generation — Mode Toggling Fix Plan Created
+**Timestamp**: 2026-06-23T22:06:55Z
+**User Input**: N/A (stage completion)
+**AI Response**: Created mode-toggling-fix-code-generation-plan.md. Presenting Code Generation Plan to user for approval.
+**Context**: CONSTRUCTION PHASE — Code Generation Part 1 (Planning) complete. Awaiting user approval of Code Generation Plan.
+
+---
+
+## Code Generation — Mode Toggling Fix Plan Approved / Generation Starts
+**Timestamp**: 2026-06-23T22:09:12+12:00
+**User Input**: "approve"
+**AI Response**: Received approval for the Code Generation Plan. Transitioning to Part 2: Generation. Implementing code modifications and running tests.
+**Context**: CONSTRUCTION PHASE — Code Generation Part 2 (Generation) begins.
+
+---
+
+## Code Generation — Mode Toggling Fix Generation Complete
+**Timestamp**: 2026-06-23T22:12:35Z
+**User Input**: N/A (stage completion)
+**AI Response**: Completed code changes and verified tests passed successfully. Presenting Code Generation Completion message.
+**Context**: CONSTRUCTION PHASE — Code Generation complete. Awaiting user approval to proceed to Build and Test.
+
+---
+
+## Code Generation — Mode Toggling Fix Approved / Build and Test Starts
+**Timestamp**: 2026-06-23T22:13:10+12:00
+**User Input**: "approve"
+**AI Response**: Received approval for Code Generation. Transitioning to the Build and Test stage.
+**Context**: CONSTRUCTION PHASE — Build and Test stage begins.
+
+---
+
+## Build and Test Stage — Mode Toggling Fix Complete
+**Timestamp**: 2026-06-23T22:15:15Z
+**Build Status**: Success
+**Test Status**: Pass
+**Files Generated**:
+- build-instructions.md
+- unit-test-instructions.md
+- integration-test-instructions.md
+- performance-test-instructions.md
+- build-and-test-summary.md
+**Context**: CONSTRUCTION PHASE — Build and Test complete. Awaiting user approval to proceed to Operations.
+
+---
+
+## Build and Test Stage — Mode Toggling Fix Approved / Operations Starts
+**Timestamp**: 2026-06-23T22:16:32+12:00
+**User Input**: "approve"
+**AI Response**: Received approval for the Build and Test stage. Transitioning to the Operations phase.
+**Context**: OPERATIONS PHASE begins.

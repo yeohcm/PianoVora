@@ -32,6 +32,7 @@ export function useAudioEngine(): AudioEngineResult {
   const setIsListening = useAppStore((s) => s.setIsListening);
   const setPermissionState = useAppStore((s) => s.setPermissionState);
   const setAudioLevel = useAppStore((s) => s.setAudioLevel);
+  const inputMode = useAppStore((s) => s.inputMode);
   const getNoiseGateThreshold = useRef(() =>
     useAppStore.getState().noiseGateThreshold,
   );
@@ -135,6 +136,7 @@ export function useAudioEngine(): AudioEngineResult {
   );
 
   const start = useCallback(async () => {
+    if (useAppStore.getState().inputMode === 'synth') return;
     userIntentStoppedRef.current = false;
 
     // Resume existing suspended context (subsequent starts)
@@ -191,6 +193,12 @@ export function useAudioEngine(): AudioEngineResult {
     audioContextRef.current?.suspend();
     setIsListening(false);
   }, [stopRMSLoop, setIsListening]);
+
+  useEffect(() => {
+    if (inputMode === 'synth') {
+      stop();
+    }
+  }, [inputMode, stop]);
 
   useEffect(() => {
     return () => {

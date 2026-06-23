@@ -3,6 +3,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { PianoKeyboard } from '@/features/keyboard/PianoKeyboard';
 import { useAppStore } from '@/store/appStore';
 import type { DetectedNote } from '@/shared/types';
+import { playNote, stopNote } from '@/features/keyboard/synthesizer';
+
+vi.mock('@/features/keyboard/synthesizer', () => ({
+  playNote: vi.fn(),
+  stopNote: vi.fn(),
+}));
 
 // ── ResizeObserver mock ──────────────────────────────────────────────────────
 
@@ -42,7 +48,9 @@ beforeEach(() => {
   vi.stubGlobal('matchMedia', mockMatchMedia);
   HTMLElement.prototype.scrollTo = mockScrollTo;
   HTMLCanvasElement.prototype.getContext = mockGetContext as typeof HTMLCanvasElement.prototype.getContext;
-  useAppStore.setState({ detectedNote: null });
+  useAppStore.setState({ detectedNote: null, inputMode: 'mic' });
+  vi.mocked(playNote).mockClear();
+  vi.mocked(stopNote).mockClear();
 });
 
 afterEach(() => {
@@ -293,6 +301,63 @@ describe('PianoKeyboard', () => {
       act(() => { useAppStore.getState().setTheme('cyber'); });
       const key = screen.getByTestId('key-39');
       expect(key.getAttribute('fill')).toBe('var(--key-white)');
+    });
+  });
+
+  describe('synth mode sound triggers', () => {
+    beforeEach(() => {
+      useAppStore.setState({ inputMode: 'synth' });
+    });
+
+    it('mouse down plays synth sound, mouse up stops sound', () => {
+      render(<PianoKeyboard />);
+      fireResize();
+
+      const key = screen.getByTestId('key-48');
+      
+      fireEvent.mouseDown(key);
+      expect(playNote).toHaveBeenCalled();
+      expect(useAppStore.getState().detectedNote?.keyIndex).toBe(48);
+
+      fireEvent.mouseUp(key);
+      expect(stopNote).toHaveBeenCalled();
+      expect(useAppStore.getState().detectedNote).toBeNull();
+    });
+
+    it('touch start plays synth sound, touch end stops sound', () => {
+      render(<PianoKeyboard />);
+      fireResize();
+
+      const key = screen.getByTestId('key-48');
+
+      fireEvent.touchStart(key);
+      expect(playNote).toHaveBeenCalled();
+
+      fireEvent.touchEnd(key);
+      expect(stopNote).toHaveBeenCalled();
+    });
+
+    it('key down Space plays synth sound, key up Space stops sound', () => {
+      render(<PianoKeyboard />);
+      fireResize();
+
+      const key = screen.getByTestId('key-48');
+
+      fireEvent.keyDown(key, { key: ' ' });
+      expect(playNote).toHaveBeenCalled();
+
+      fireEvent.keyUp(key, { key: ' ' });
+      expect(stopNote).toHaveBeenCalled();
+    });
+
+    it('standard click is ignored in synth mode to avoid double plays', () => {
+      render(<PianoKeyboard />);
+      fireResize();
+
+      const key = screen.getByTestId('key-48');
+
+      fireEvent.click(key);
+      expect(playNote).not.toHaveBeenCalled();
     });
   });
 });

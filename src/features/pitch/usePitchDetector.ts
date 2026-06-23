@@ -16,6 +16,7 @@ interface PitchDetectorOptions {
 
 export function usePitchDetector({ analyserRef }: PitchDetectorOptions): void {
   const isListening = useAppStore((s) => s.isListening);
+  const inputMode = useAppStore((s) => s.inputMode);
   const setDetectedNote = useAppStore((s) => s.setDetectedNote);
   const setNoteHistory = useAppStore((s) => s.setNoteHistory);
 
@@ -38,7 +39,7 @@ export function usePitchDetector({ analyserRef }: PitchDetectorOptions): void {
 
   // rAF detection loop — starts/stops with isListening (NFR-R-03, BR-03)
   useEffect(() => {
-    if (!isListening) {
+    if (!isListening || inputMode === 'synth') {
       cancelAnimationFrame(animationFrameRef.current);
       setDetectedNote(null);
       prevKeyIndexRef.current = null;
@@ -139,5 +140,5 @@ export function usePitchDetector({ analyserRef }: PitchDetectorOptions): void {
       cancelled = true;
       cancelAnimationFrame(animationFrameRef.current);
     };
-  }, [isListening, analyserRef, setDetectedNote, setNoteHistory]);
+  }, [isListening, inputMode, analyserRef, setDetectedNote, setNoteHistory]);
 }
