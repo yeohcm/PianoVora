@@ -1,208 +1,167 @@
-# PianoVora — Execution Plan
-
-**Date**: 2026-05-09  
-**Version**: 1.0
-
----
+# Execution Plan
 
 ## Detailed Analysis Summary
 
-### Change Impact Assessment
+### Transformation Scope (Brownfield Only)
+- **Transformation Type**: Application-level change.
+- **Primary Changes**: Integrate Web Audio oscillator synthesis into virtual keyboard triggers, update Zustand store state with mode selection (`inputMode: 'mic' | 'synth'`), create mode switch toggle inside UI header, and manage microphone suspension cleanly.
+- **Related Components**:
+  - `src/store/audioSlice.ts` / `src/store/appStore.ts`: Add `inputMode` and `setInputMode(mode)`.
+  - `src/features/audio/useAudioEngine.ts` / `src/features/pitch/usePitchDetector.ts`: React to `inputMode === 'synth'` by stopping/releasing mic and halting detection frames.
+  - `src/features/ui/AppLayout.tsx`: Add Mode Switch toggle buttons, show Synth active HUD state, and disable mic-specific controls.
+  - `src/features/keyboard/PianoKeyboard.tsx`: Trigger monophonic audio synthesis when clicking/keyboard-pressing SVG keys.
+  - `src/features/keyboard/synthesizer.ts`: New file housing standard Web Audio oscillator tone outputs and ADSR envelopes.
 
-| Area | Impact | Detail |
-|---|---|---|
-| User-facing changes | Yes — entire product | All 10 stories are user-facing; every feature directly affects the practice experience |
-| Structural changes | Yes — new system | New React + Vite app with 4 distinct technical layers built from scratch |
-| Data model changes | Minimal | No database; state shapes for detected note, note history, theme, and audio status defined via Zustand store |
-| API changes | N/A | Browser-native APIs only (Web Audio API, getUserMedia); no service-to-service APIs |
-| NFR impact | Significant | <100ms latency, 60fps animations, WCAG 2.1 AA, zero audio off-device, PBT partial enforcement |
+### Change Impact Assessment
+- **User-facing changes**: Yes — user gets a Mode Toggle header control, synthesized sound output on virtual key click (when in Synth mode), and a modified HUD active note state during Synth play.
+- **Structural changes**: No — uses existing React component boundaries.
+- **Data model changes**: No — only in-memory Zustand UI slices are updated.
+- **API changes**: No.
+- **NFR impact**: None.
+
+### Component Relationships (Brownfield Only)
+```markdown
+## Component Relationships
+- **Primary Component**: src/features/keyboard/PianoKeyboard.tsx (dispatches click play event)
+- **Infrastructure Components**: None
+- **Shared Components**: src/features/keyboard/synthesizer.ts (custom audio synthesis helper module)
+- **Dependent Components**: src/features/ui/AppLayout.tsx (renders mode selection controls)
+- **Supporting Components**: src/store/audioSlice.ts (maintains inputMode state)
+```
 
 ### Risk Assessment
-
-| Attribute | Rating | Detail |
-|---|---|---|
-| **Risk Level** | Medium | Multiple browser API constraints; 60fps canvas performance; WCAG 2.1 AA; cross-browser Web Audio API quirks (Safari) |
-| **Rollback Complexity** | Easy | Static Netlify deploy; each deployment is independently addressable |
-| **Testing Complexity** | Moderate | Browser API mocking (getUserMedia, AudioContext), canvas rendering tests, Playwright e2e, fast-check PBT |
-
----
-
-## Proposed Unit Breakdown (4 Units)
-
-The system decomposes naturally into 4 independently buildable and testable units. Units execute sequentially as Units 2–3 depend on Unit 1's audio buffer interface.
-
-| Unit | Name | Scope | Stories |
-|---|---|---|---|
-| **Unit 1** | Audio Engine | getUserMedia, AudioContext, AnalyserNode, RMS noise gate, stop/restart, audio level signal | FEAT-01, FEAT-09 (audio layer) |
-| **Unit 2** | Pitch Detection | pitchy integration, waveform buffer processing, frequency-to-MIDI mapping, note name calculation, Zustand store (detectedNote, noteHistory) | FEAT-02, FEAT-07 (data) |
-| **Unit 3** | Piano Keyboard & Visual Feedback | SVG 88-key layout, Canvas animation engine (sparkle/glow, 60fps), neon theme system (Cyber/Aurora/Sunset), note name overlay, key scroll centring, clickable key interaction | FEAT-03, FEAT-04, FEAT-05, FEAT-10 |
-| **Unit 4** | UI Shell & Features | Dark theme layout, responsive design (360px+), mic toggle, audio level meter component, sensitivity slider, note history panel, onboarding modal, error/fallback states, theme selector, Netlify deployment config | FEAT-01 (UI), FEAT-06, FEAT-07 (UI), FEAT-08, FEAT-09 (UI), FEAT-05 (selector) |
-
-**Unit Dependency Order**: Unit 1 → Unit 2 → Unit 3 → Unit 4
+- **Risk Level**: Low.
+- **Rollback Complexity**: Easy — code remains isolated to client-only packages.
+- **Testing Complexity**: Moderate — requires mocking Web Audio oscillators and testing layout mode transitions in Vitest.
 
 ---
 
 ## Workflow Visualization
 
 ### Mermaid Diagram
-
 ```mermaid
 flowchart TD
     Start(["User Request"])
-
-    subgraph INCEPTION["INCEPTION PHASE"]
+    
+    subgraph INCEPTION["🔵 INCEPTION PHASE"]
         WD["Workspace Detection<br/><b>COMPLETED</b>"]
-        RE["Reverse Engineering<br/><b>SKIP — Greenfield</b>"]
+        RE["Reverse Engineering<br/><b>COMPLETED</b>"]
         RA["Requirements Analysis<br/><b>COMPLETED</b>"]
         US["User Stories<br/><b>COMPLETED</b>"]
-        WP["Workflow Planning<br/><b>COMPLETED</b>"]
-        AD["Application Design<br/><b>EXECUTE</b>"]
-        UG["Units Generation<br/><b>EXECUTE</b>"]
+        WP["Workflow Planning<br/><b>IN PROGRESS</b>"]
+        AD["Application Design<br/><b>SKIP</b>"]
+        UG["Units Generation<br/><b>SKIP</b>"]
     end
-
-    subgraph CONSTRUCTION["CONSTRUCTION PHASE"]
-        FD["Functional Design<br/><b>EXECUTE — per unit</b>"]
-        NFRA["NFR Requirements<br/><b>EXECUTE — per unit</b>"]
-        NFRD["NFR Design<br/><b>EXECUTE — per unit</b>"]
-        ID["Infrastructure Design<br/><b>EXECUTE — Unit 4 only</b>"]
-        CG["Code Generation<br/><b>EXECUTE</b>"]
+    
+    subgraph CONSTRUCTION["🟢 CONSTRUCTION PHASE"]
+        FD["Functional Design<br/><b>SKIP</b>"]
+        NFRA["NFR Requirements<br/><b>SKIP</b>"]
+        NFRD["NFR Design<br/><b>SKIP</b>"]
+        ID["Infrastructure Design<br/><b>SKIP</b>"]
+        CG["Code Generation<br/>(Planning + Generation)<br/><b>EXECUTE</b>"]
         BT["Build and Test<br/><b>EXECUTE</b>"]
     end
-
-    subgraph OPERATIONS["OPERATIONS PHASE"]
+    
+    subgraph OPERATIONS["🟡 OPERATIONS PHASE"]
         OPS["Operations<br/><b>PLACEHOLDER</b>"]
     end
-
+    
     Start --> WD
-    WD -.-> RE
-    WD --> RA
+    WD --> RE
+    RE --> RA
     RA --> US
     US --> WP
-    WP --> AD
-    AD --> UG
-    UG --> FD
-    FD --> NFRA
-    NFRA --> NFRD
-    NFRD --> ID
-    ID --> CG
-    CG -.->|Next Unit| FD
+    WP --> CG
     CG --> BT
-    BT -.-> OPS
     BT --> End(["Complete"])
 
     style WD fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
+    style RE fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
     style RA fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
     style US fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
     style WP fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
+    
+    style AD fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
+    style UG fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
+    
+    style FD fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
+    style NFRA fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
+    style NFRD fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
+    style ID fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
+    
     style CG fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
     style BT fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
-    style RE fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
-    style AD fill:#FFA726,stroke:#E65100,stroke-width:3px,stroke-dasharray: 5 5,color:#000
-    style UG fill:#FFA726,stroke:#E65100,stroke-width:3px,stroke-dasharray: 5 5,color:#000
-    style FD fill:#FFA726,stroke:#E65100,stroke-width:3px,stroke-dasharray: 5 5,color:#000
-    style NFRA fill:#FFA726,stroke:#E65100,stroke-width:3px,stroke-dasharray: 5 5,color:#000
-    style NFRD fill:#FFA726,stroke:#E65100,stroke-width:3px,stroke-dasharray: 5 5,color:#000
-    style ID fill:#FFA726,stroke:#E65100,stroke-width:3px,stroke-dasharray: 5 5,color:#000
-    style OPS fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
+    
     style Start fill:#CE93D8,stroke:#6A1B9A,stroke-width:3px,color:#000
     style End fill:#CE93D8,stroke:#6A1B9A,stroke-width:3px,color:#000
-    style INCEPTION fill:#BBDEFB,stroke:#1565C0,stroke-width:3px,color:#000
-    style CONSTRUCTION fill:#C8E6C9,stroke:#2E7D32,stroke-width:3px,color:#000
-    style OPERATIONS fill:#FFF59D,stroke:#F57F17,stroke-width:3px,color:#000
-
+    
     linkStyle default stroke:#333,stroke-width:2px
 ```
 
 ### Text Alternative
-
-```
-INCEPTION PHASE
-  Workspace Detection      — COMPLETED
-  Reverse Engineering      — SKIP (Greenfield)
-  Requirements Analysis    — COMPLETED
-  User Stories             — COMPLETED
-  Workflow Planning        — COMPLETED
-  Application Design       — EXECUTE
-  Units Generation         — EXECUTE
-
-CONSTRUCTION PHASE (per unit, 4 units sequential)
-  Unit 1: Audio Engine
-    Functional Design      — EXECUTE
-    NFR Requirements       — EXECUTE
-    NFR Design             — EXECUTE
-    Infrastructure Design  — SKIP
-    Code Generation        — EXECUTE
-  Unit 2: Pitch Detection
-    Functional Design      — EXECUTE
-    NFR Requirements       — EXECUTE
-    NFR Design             — EXECUTE
-    Infrastructure Design  — SKIP
-    Code Generation        — EXECUTE
-  Unit 3: Keyboard & Visual Feedback
-    Functional Design      — EXECUTE
-    NFR Requirements       — EXECUTE
-    NFR Design             — EXECUTE
-    Infrastructure Design  — SKIP
-    Code Generation        — EXECUTE
-  Unit 4: UI Shell & Features
-    Functional Design      — EXECUTE
-    NFR Requirements       — EXECUTE
-    NFR Design             — EXECUTE
-    Infrastructure Design  — EXECUTE (Netlify config)
-    Code Generation        — EXECUTE
-  Build and Test           — EXECUTE
-
-OPERATIONS PHASE
-  Operations               — PLACEHOLDER
-```
+- **Start**: User requests a new key press sound synthesis feature.
+- **Workspace Detection**: Scan and detect project structure (COMPLETED).
+- **Reverse Engineering**: Analyze current audio engine, pitch tracker, and keyboard modules (COMPLETED).
+- **Requirements Analysis**: Verify scope details (e.g. modes, polyphony, synth type) with clarifying questions (COMPLETED).
+- **User Stories**: Write FEAT-11 and update personas (COMPLETED).
+- **Workflow Planning**: Select phases to execute/skip (IN PROGRESS).
+- **Application Design**: Skip — does not modify system structure.
+- **Units Planning/Generation**: Skip — groups all changes into a single workspace unit (`Unit 5`).
+- **Functional Design / NFR Design / Infrastructure Design**: Skip — changes are straightforward UI/audio implementations requiring no architecture changes.
+- **Code Generation**: Execute planning and file changes (EXECUTE).
+- **Build and Test**: Validate with full Vitest regression tests (EXECUTE).
 
 ---
 
 ## Phases to Execute
 
-### INCEPTION PHASE
+### 🔵 INCEPTION PHASE
+- [x] Workspace Detection (COMPLETED)
+- [x] Reverse Engineering (COMPLETED)
+- [x] Requirements Analysis (COMPLETED)
+- [x] User Stories (COMPLETED)
+- [x] Execution Plan (IN PROGRESS)
+- [ ] Application Design - SKIP
+  - **Rationale**: The change fits within existing component and state layout structures; no new core components or routing definitions are required.
+- [ ] Units Planning - SKIP
+  - **Rationale**: Not required as this is a single self-contained task.
+- [ ] Units Generation - SKIP
+  - **Rationale**: The work is compiled into a single workspace unit (`Unit 5: Sound Synthesis & Mode Controls`) which executes consecutively.
 
-- [x] Workspace Detection — **COMPLETED**
-- [x] Reverse Engineering — **SKIPPED** (greenfield, no existing code)
-- [x] Requirements Analysis — **COMPLETED**
-- [x] User Stories — **COMPLETED**
-- [x] Workflow Planning — **IN PROGRESS**
-- [ ] Application Design — **EXECUTE**
-  - *Rationale*: New system with 4 distinct components and a shared Zustand store. Component interfaces, method signatures, and dependency relationships need definition before code generation.
-- [ ] Units Generation — **EXECUTE**
-  - *Rationale*: 4 units with clear boundaries and a sequential dependency order need formal documentation to guide per-unit construction.
+### 🟢 CONSTRUCTION PHASE
+- [ ] Functional Design - SKIP
+  - **Rationale**: Standard React component UI bindings and Web Audio API play calls do not need detailed schematic or data modeling diagrams.
+- [ ] NFR Requirements - SKIP
+  - **Rationale**: Latency constraints (<100ms) are already established in v1.0. No new scaling or hosting specifications apply.
+- [ ] NFR Design - SKIP
+  - **Rationale**: Sound generation leverages standard browser-native context features, requiring no advanced design patterns.
+- [ ] Infrastructure Design - SKIP
+  - **Rationale**: Standard static code updates. No CDK/CloudFormation alterations.
+- [ ] Code Generation - EXECUTE (ALWAYS)
+  - **Rationale**: Create `synthesizer.ts`, add mode switch controls, and hook keyboard play handlers.
+- [ ] Build and Test - EXECUTE (ALWAYS)
+  - **Rationale**: Ensure all 253+ tests pass and implement new unit/integration tests covering the mode switch states.
 
-### CONSTRUCTION PHASE
-
-**Per-Unit Stages** (applied to each of the 4 units in sequence):
-
-- [ ] Functional Design — **EXECUTE per unit**
-  - *Rationale*: Each unit has distinct business logic (audio buffering, frequency math, canvas animation, UI composition) requiring detailed design before code generation.
-- [ ] NFR Requirements — **EXECUTE per unit**
-  - *Rationale*: Performance (<100ms latency for Units 1–2, 60fps for Unit 3), WCAG 2.1 AA (Unit 4), PBT partial enforcement (Units 2), cross-browser compatibility (all units).
-- [ ] NFR Design — **EXECUTE per unit**
-  - *Rationale*: Follows NFR Requirements; patterns for performance optimisation (requestAnimationFrame, AudioWorklet consideration), accessibility markup, and PBT generator design need to be incorporated into design artefacts.
-- [ ] Infrastructure Design — **EXECUTE Unit 4 only / SKIP Units 1–3**
-  - *Rationale*: Netlify deployment config (netlify.toml, SPA routing, security headers for HTTPS) is part of Unit 4 scope. Units 1–3 have no infrastructure footprint.
-- [ ] Code Generation — **EXECUTE per unit** (always)
-- [ ] Build and Test — **EXECUTE** (always, after all 4 units complete)
-
-### OPERATIONS PHASE
-
-- [ ] Operations — **PLACEHOLDER** (future deployment and monitoring workflows)
+### 🟡 OPERATIONS PHASE
+- [ ] Operations - PLACEHOLDER
+  - **Rationale**: Standard GitHub Pages push deployment.
 
 ---
 
-## Success Criteria
+## Package Change Sequence (Brownfield Only)
+*Note: Single monorepo package. No multi-package updates required.*
 
-| Criterion | Target |
-|---|---|
-| Note detection accuracy | >95% on 50 standard piano notes |
-| End-to-end latency | <100ms (key strike to neon highlight, Chrome desktop) |
-| Animation performance | 60fps sustained on mid-range 2020+ laptop |
-| Responsive layout | Functional from 360px to 2560px |
-| Accessibility | WCAG 2.1 AA automated audit pass |
-| Browser compatibility | Chrome 110+, Firefox 110+, Safari 16+, Edge 110+ |
-| Code coverage | >70% (Vitest + RTL) |
-| Privacy | Zero audio data leaves device (verified) |
-| PBT | fast-check round-trip and invariant tests passing for pitch detection pure functions |
+## Estimated Timeline
+- **Total Phases**: 2 (Inception + Construction)
+- **Estimated Duration**: ~1 hour execution
+
+## Success Criteria
+- **Primary Goal**: Synthesize soft monophonic tone playback when clicking virtual keys in Synth Mode while preventing mic loop feedback.
+- **Key Deliverables**:
+  - `src/features/keyboard/synthesizer.ts` (monophonic oscillator engine)
+  - Mode Switch control in `AppLayout.tsx`
+  - Updated store actions in `audioSlice.ts`
+  - Modified listener triggers in `useAudioEngine.ts` and `usePitchDetector.ts`
+- **Quality Gates**:
+  - Zero TypeScript compile errors (`npm run lint` matches `tsc --noEmit`).
+  - Unit/integration test suites pass with >70% coverage.

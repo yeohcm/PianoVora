@@ -26,9 +26,10 @@
 - Clear, friendly permission prompt for the microphone
 - Immediate visual response (<100ms) to keep her engaged
 - Large, readable note names on the keyboard
+- Auditory feedback on virtual key clicks to help map visual keys to pitch sounds
 - No configuration required to get started
 
-**Related Stories**: FEAT-01, FEAT-03, FEAT-04, FEAT-08, FEAT-09
+**Related Stories**: FEAT-01, FEAT-03, FEAT-04, FEAT-08, FEAT-09, FEAT-11
 
 ---
 
@@ -53,8 +54,9 @@
 - Visual confirmation that the mic is active and picking up signal
 - Ability to stop/restart listening without reloading the page
 - Theme options to match his personal aesthetic
+- A clean mode toggle between Mic and Synth modes to prevent synthesized speaker sound from feeding back into the active microphone
 
-**Related Stories**: FEAT-01, FEAT-02, FEAT-05, FEAT-06, FEAT-07, FEAT-09
+**Related Stories**: FEAT-01, FEAT-02, FEAT-05, FEAT-06, FEAT-07, FEAT-09, FEAT-11
 
 ---
 
@@ -76,11 +78,12 @@
 **Needs from PianoVora:**
 - No login, no install — works immediately
 - Works on her phone when the laptop isn't available
-- Clickable keys to test visual themes without playing
+- Clickable keys to test visual themes and hear pitches without playing a real piano
 - All three neon themes to explore
 - Sensitivity slider for apartment-level ambient noise control
+- A client-side monophonic synthesizer to practice manual play on desktop
 
-**Related Stories**: FEAT-01, FEAT-02, FEAT-03, FEAT-04, FEAT-05, FEAT-06, FEAT-07
+**Related Stories**: FEAT-01, FEAT-02, FEAT-03, FEAT-04, FEAT-05, FEAT-06, FEAT-07, FEAT-11
 
 ---
 
@@ -100,12 +103,13 @@
 | **Key Motivator** | Clicking a key on the projected keyboard lights it up with the note name — students see exactly what he means |
 
 **Needs from PianoVora:**
-- Clickable keys work without microphone (demo mode)
+- Clickable keys work and synthesize sound without microphone (Synth Mode)
 - Clear note name labels on illuminated keys
 - Neon visuals are visible on a projected display
+- Audible tone playback on key click so students can hear the note pitch during demonstrations
 - No configuration or login required — must work immediately in a classroom setting
 
-**Related Stories**: FEAT-03, FEAT-04, FEAT-09, FEAT-10
+**Related Stories**: FEAT-03, FEAT-04, FEAT-09, FEAT-10, FEAT-11
 
 ---
 
@@ -123,3 +127,4 @@
 | FEAT-08: Onboarding Experience | ✓ | — | — | — |
 | FEAT-09: Error & Fallback | ✓ | ✓ | ✓ | ✓ |
 | FEAT-10: Teacher Demonstration | — | — | — | ✓ |
+| FEAT-11: Sound Playback & Mode Control | ✓ | ✓ | ✓ | ✓ |

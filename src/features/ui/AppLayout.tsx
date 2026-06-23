@@ -24,6 +24,8 @@ export default function AppLayout() {
   const noteHistory            = useAppStore((s) => s.noteHistory);
   const theme                  = useAppStore((s) => s.theme);
   const detectedNote           = useAppStore((s) => s.detectedNote);
+  const inputMode              = useAppStore((s) => s.inputMode);
+  const setInputMode           = useAppStore((s) => s.setInputMode);
 
   const [tourStep, setTourStep] = useState<number | null>(null);
 
@@ -69,8 +71,60 @@ export default function AppLayout() {
 
         {/* Controls group */}
         <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto justify-end">
+          {/* Mode switch (BR-11 / FEAT-11) */}
+          <div
+            className="flex items-center bg-white/5 border border-white/10 rounded-xl p-1 shadow-inner select-none"
+            role="radiogroup"
+            aria-label="Input Mode Switch"
+          >
+            <button
+              type="button"
+              role="radio"
+              aria-checked={inputMode === 'mic'}
+              onClick={() => setInputMode('mic')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5 ${
+                inputMode === 'mic'
+                  ? 'bg-white/10 text-white border border-white/20 shadow-md'
+                  : 'text-white/40 hover:text-white/70 border border-transparent'
+              }`}
+              style={{
+                borderColor: inputMode === 'mic' ? 'var(--neon-accent)' : undefined,
+                boxShadow: inputMode === 'mic' ? '0 0 10px -2px var(--glow-colour)' : undefined,
+              }}
+              data-testid="mode-toggle-mic"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+              Mic
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={inputMode === 'synth'}
+              onClick={() => setInputMode('synth')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5 ${
+                inputMode === 'synth'
+                  ? 'bg-white/10 text-white border border-white/20 shadow-md'
+                  : 'text-white/40 hover:text-white/70 border border-transparent'
+              }`}
+              style={{
+                borderColor: inputMode === 'synth' ? 'var(--neon-accent)' : undefined,
+                boxShadow: inputMode === 'synth' ? '0 0 10px -2px var(--glow-colour)' : undefined,
+              }}
+              data-testid="mode-toggle-synth"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+              </svg>
+              Synth
+            </button>
+          </div>
+
           {/* Audio Input Group */}
-          <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-1.5 px-3 shadow-inner">
+          <div className={`flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-1.5 px-3 shadow-inner transition-all duration-300 ${
+            inputMode === 'synth' ? 'opacity-30 pointer-events-none' : ''
+          }`}>
             <MicToggle onStart={start} onStop={stop} />
             <div className="w-24 sm:w-28 md:w-32 flex flex-col gap-1 justify-center">
               <span className="text-[9px] uppercase tracking-widest text-white/40 font-bold leading-none select-none">Level</span>
@@ -81,7 +135,9 @@ export default function AppLayout() {
           </div>
 
           {/* Sensitivity Group */}
-          <div className="w-full sm:w-44 md:w-56 max-w-xs">
+          <div className={`w-full sm:w-44 md:w-56 max-w-xs transition-all duration-300 ${
+            inputMode === 'synth' ? 'opacity-30 pointer-events-none' : ''
+          }`}>
             <SensitivitySlider />
           </div>
 
@@ -142,13 +198,23 @@ export default function AppLayout() {
                   <span className="absolute inset-0 rounded-full border border-white/5 animate-ping-slow scale-150 opacity-40" />
                   <span className="absolute inset-0 rounded-full border border-white/10 animate-ping-slow opacity-60" />
                   <span className="w-8 h-8 rounded-full bg-white/5 border border-white/15 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white/40 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                    </svg>
+                    {inputMode === 'synth' ? (
+                      <svg className="w-4 h-4 text-white/40 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4 text-white/40 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                      </svg>
+                    )}
                   </span>
                 </div>
-                <span className="text-sm font-semibold tracking-wider text-white/40 uppercase animate-pulse-slow">Sing or play a key</span>
-                <span className="text-xs text-white/30 mt-1 select-none">Waiting for input…</span>
+                <span className="text-sm font-semibold tracking-wider text-white/40 uppercase animate-pulse-slow">
+                  {inputMode === 'synth' ? 'Press a key to play' : 'Sing or play a key'}
+                </span>
+                <span className="text-xs text-white/30 mt-1 select-none">
+                  {inputMode === 'synth' ? 'Synthesizer active…' : 'Waiting for input…'}
+                </span>
               </div>
             )}
           </div>

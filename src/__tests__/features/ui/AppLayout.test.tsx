@@ -63,6 +63,7 @@ function resetStore(overrides: Record<string, unknown> = {}) {
     audioLevel:          0,
     noiseGateThreshold:  0.01,
     detectedNote:        null,
+    inputMode:           'mic',
     ...overrides,
   });
 }
@@ -238,6 +239,32 @@ describe('AppLayout', () => {
         useAppStore.getState().setTheme('aurora');
       });
       expect(mockSetItem).toHaveBeenCalledWith('pianovora_theme', 'aurora');
+    });
+  });
+
+  describe('mode toggle (mic vs synth)', () => {
+    it('renders segmented mode toggle button in header', () => {
+      render(<AppLayout />);
+      expect(screen.getByTestId('mode-toggle-mic')).toBeInTheDocument();
+      expect(screen.getByTestId('mode-toggle-synth')).toBeInTheDocument();
+    });
+
+    it('defaults inputMode to mic', () => {
+      render(<AppLayout />);
+      expect(useAppStore.getState().inputMode).toBe('mic');
+    });
+
+    it('clicking synth toggle button switches mode to synth', () => {
+      render(<AppLayout />);
+      fireEvent.click(screen.getByTestId('mode-toggle-synth'));
+      expect(useAppStore.getState().inputMode).toBe('synth');
+    });
+
+    it('switching to synth mode updates HUD standby text', () => {
+      resetStore({ inputMode: 'synth' });
+      render(<AppLayout />);
+      expect(screen.getByText('Press a key to play')).toBeInTheDocument();
+      expect(screen.getByText('Synthesizer active…')).toBeInTheDocument();
     });
   });
 });

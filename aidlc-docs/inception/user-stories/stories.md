@@ -464,6 +464,55 @@ Then the new theme's colours apply immediately to subsequent key clicks
 
 ---
 
+## FEAT-11: Sound Playback & Mode Control
+
+**Story**
+> As a piano learner or instructor, I want to toggle between listening mode and synthesizer mode so that I can click/press on-screen keys to play synthesized notes client-side without microphone feedback interference.
+
+**Personas**: Mia (Beginner), James (Adult Returner), Priya (Self-Taught), Mr. Chen (Teacher)
+
+**PRD Coverage**: SP-01, SP-02, SP-03, SP-04, SP-05, SP-06
+
+**Acceptance Criteria**
+
+*Scenario 1 — Switching to Synth Mode halts Microphone Listening*
+```
+Given the application is currently in Mic Mode (microphone active, pitch detection running)
+When I click the Mode Toggle to switch to "Synth" Mode
+Then the microphone stream is immediately closed or suspended
+And the level meter becomes flat/inactive
+And the app displays "Synth Mode" active in the UI
+```
+
+*Scenario 2 — Playing sounds in Synth Mode*
+```
+Given the application is in Synth Mode
+When I click or focus and press Enter/Space on any virtual keyboard key (e.g. A0)
+Then the app synthesizes a monophonic tone corresponding to the key's frequency client-side using Web Audio oscillators
+And the key lights up with neon feedback and triggers sparkles on the canvas overlay
+And the HUD text overlay displays the note name and frequency
+```
+
+*Scenario 3 — Monophonic tone release*
+```
+Given a note (e.g. C4) is currently playing in Synth Mode
+When I click another note (e.g. E4) OR release the clicked key
+Then the tone for C4 immediately stops or releases smoothly to avoid audio pops
+And the tone for E4 starts playing
+```
+
+*Scenario 4 — Mic Mode disables key click sounds*
+```
+Given the application is in Mic Mode
+When I click or focus and press Enter/Space on any virtual keyboard key
+Then the key highlights visually on screen
+But no synthesized tone is played (remains silent)
+```
+
+**INVEST Notes**: Independently testable using standard Vitest mock environments for Web Audio oscillators. Small enough to implement within a single unit.
+
+---
+
 ## Story Summary
 
 | ID | Feature Area | Personas | PRD Requirements | Priority |
@@ -478,5 +527,7 @@ Then the new theme's colours apply immediately to subsequent key clicks
 | FEAT-08 | Onboarding Experience | Beginner | UI-06 | Must Have |
 | FEAT-09 | Error & Fallback Handling | All | AC-03, NFR-R-01, NFR-R-02 | Must Have |
 | FEAT-10 | Music Teacher Demonstration | Music Teacher | KB-05, VF-01, VF-02, VF-05 | Must Have |
+| FEAT-11 | Sound Playback & Mode Control | All | SP-01–06 | Must Have |
 
-**Total**: 10 stories | 4 personas | All 88 PRD requirements covered
+**Total**: 11 stories | 4 personas | All requirements covered
+

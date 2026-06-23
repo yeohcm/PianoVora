@@ -8,6 +8,7 @@ import {
 } from '../../shared/pianoGeometry';
 import type { DetectedNote } from '../../shared/types';
 import { CanvasOverlay } from './CanvasOverlay';
+import { playNote, stopNote } from './synthesizer';
 
 function rainbowFill(keyIndex: number, isBlack: boolean, isActive: boolean): string {
   const hue = Math.round((keyIndex / 87) * 360);
@@ -19,6 +20,7 @@ export function PianoKeyboard() {
   const detectedNote    = useAppStore((s) => s.detectedNote);
   const setDetectedNote = useAppStore((s) => s.setDetectedNote);
   const theme           = useAppStore((s) => s.theme);
+  const inputMode       = useAppStore((s) => s.inputMode);
 
   const containerRef              = useRef<HTMLDivElement | null>(null);
   const [totalWidth, setTotalWidth] = useState(0);
@@ -67,12 +69,27 @@ export function PianoKeyboard() {
       timestamp: performance.now(),
     };
     setDetectedNote(note);
+    if (inputMode === 'synth') {
+      playNote(note.frequency);
+    }
   }
 
   function handleKeyKeyDown(e: React.KeyboardEvent, keyIndex: number): void {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      handleKeyClick(keyIndex);
+      if (!e.repeat) {
+        handleKeyClick(keyIndex);
+      }
+    }
+  }
+
+  function handleKeyKeyUp(e: React.KeyboardEvent, keyIndex: number): void {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (inputMode === 'synth' && useAppStore.getState().detectedNote?.keyIndex === keyIndex) {
+        setDetectedNote(null);
+        stopNote();
+      }
     }
   }
 
@@ -121,8 +138,43 @@ export function PianoKeyboard() {
                     tabIndex={0}
                     cursor="pointer"
                     aria-label={keyIndexToNoteName(rect.keyIndex)! + keyIndexToOctave(rect.keyIndex)!}
-                    onClick={() => handleKeyClick(rect.keyIndex)}
+                    onClick={() => {
+                      if (inputMode !== 'synth') {
+                        handleKeyClick(rect.keyIndex);
+                      }
+                    }}
                     onKeyDown={(e) => handleKeyKeyDown(e, rect.keyIndex)}
+                    onKeyUp={(e) => handleKeyKeyUp(e, rect.keyIndex)}
+                    onMouseDown={(e) => {
+                      if (inputMode === 'synth') {
+                        e.preventDefault();
+                        handleKeyClick(rect.keyIndex);
+                      }
+                    }}
+                    onMouseUp={() => {
+                      if (inputMode === 'synth' && detectedNote?.keyIndex === rect.keyIndex) {
+                        setDetectedNote(null);
+                        stopNote();
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (inputMode === 'synth' && detectedNote?.keyIndex === rect.keyIndex) {
+                        setDetectedNote(null);
+                        stopNote();
+                      }
+                    }}
+                    onTouchStart={(e) => {
+                      if (inputMode === 'synth') {
+                        e.preventDefault();
+                        handleKeyClick(rect.keyIndex);
+                      }
+                    }}
+                    onTouchEnd={() => {
+                      if (inputMode === 'synth' && detectedNote?.keyIndex === rect.keyIndex) {
+                        setDetectedNote(null);
+                        stopNote();
+                      }
+                    }}
                     data-testid={`key-${rect.keyIndex}`}
                   />
                   {/* Octave marker C1–C8 (BR-04) */}
@@ -161,8 +213,43 @@ export function PianoKeyboard() {
                   tabIndex={0}
                   cursor="pointer"
                   aria-label={keyIndexToNoteName(rect.keyIndex)! + keyIndexToOctave(rect.keyIndex)!}
-                  onClick={() => handleKeyClick(rect.keyIndex)}
+                  onClick={() => {
+                    if (inputMode !== 'synth') {
+                      handleKeyClick(rect.keyIndex);
+                    }
+                  }}
                   onKeyDown={(e) => handleKeyKeyDown(e, rect.keyIndex)}
+                  onKeyUp={(e) => handleKeyKeyUp(e, rect.keyIndex)}
+                  onMouseDown={(e) => {
+                    if (inputMode === 'synth') {
+                      e.preventDefault();
+                      handleKeyClick(rect.keyIndex);
+                    }
+                  }}
+                  onMouseUp={() => {
+                    if (inputMode === 'synth' && detectedNote?.keyIndex === rect.keyIndex) {
+                      setDetectedNote(null);
+                      stopNote();
+                    }
+                  }}
+                  onMouseLeave={() => {
+                    if (inputMode === 'synth' && detectedNote?.keyIndex === rect.keyIndex) {
+                      setDetectedNote(null);
+                      stopNote();
+                    }
+                  }}
+                  onTouchStart={(e) => {
+                    if (inputMode === 'synth') {
+                      e.preventDefault();
+                      handleKeyClick(rect.keyIndex);
+                    }
+                  }}
+                  onTouchEnd={() => {
+                    if (inputMode === 'synth' && detectedNote?.keyIndex === rect.keyIndex) {
+                      setDetectedNote(null);
+                      stopNote();
+                    }
+                  }}
                   data-testid={`key-${rect.keyIndex}`}
                 />
               );

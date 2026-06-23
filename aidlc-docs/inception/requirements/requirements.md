@@ -1,8 +1,8 @@
 # PianoVora — Requirements Document
 
-**Version**: 1.0  
-**Date**: 2026-05-09  
-**Source PRD**: docs/PianoVora_PRD_v1.0.md  
+**Version**: 1.1  
+**Date**: 2026-06-23  
+**Source PRD**: docs/PianoVora_PRD_v1.0.md + User Feature Request 2026-06-23  
 **Status**: Approved
 
 ---
@@ -11,10 +11,10 @@
 
 | Attribute | Detail |
 |---|---|
-| **User Request** | Implement PianoVora browser-based piano practice app as defined in PRD v1.0 |
-| **Request Type** | New Project (Greenfield) |
-| **Scope** | System-wide — full frontend application with audio pipeline, pitch detection engine, keyboard rendering, animation layer, and responsive UI |
-| **Complexity** | Complex — multiple interdependent technical components, strict latency and accuracy NFRs, cross-browser audio API constraints, WCAG 2.1 AA accessibility target |
+| **User Request** | Add feature: when a key is pressed, play the sound accordingly. |
+| **Request Type** | Feature Addition (Brownfield) |
+| **Scope** | Keyboard UI & Audio Synthesis Integration — add mode toggle (Mic vs. Synth), construct oscillator-based monophonic synth player, wire keyboard triggers to sound output, and bypass mic capture in Synth mode. |
+| **Complexity** | Moderate — requires modifying global Zustand store, updating layout controls, integrating Web Audio oscillator synthesis, and ensuring clean monophonic decay. |
 
 ---
 
@@ -24,13 +24,13 @@
 |---|---|---|
 | Language | TypeScript (strict mode) | Type safety for audio processing and canvas code; catches errors at compile time |
 | Frontend Framework | React 18 + Vite | Fast HMR, component model suits keyboard UI |
-| State Management | Zustand | Lightweight external store; minimal boilerplate for audio state, detected note, and theme |
-| Pitch Detection | `pitchy` library (YIN/McLeod) | Battle-tested, browser-native, no WASM complexity for v1 |
+| State Management | Zustand | Lightweight external store; minimal boilerplate for audio state, detected note, theme, and mode |
+| Pitch Detection | `pitchy` library (YIN/McLeod) | Battle-tested, browser-native, no WASM complexity |
 | Keyboard Rendering | SVG keyboard + HTML Canvas overlay | SVG gives accessible DOM nodes per key; Canvas layer handles 60fps glow and sparkle effects |
+| Audio Output | Web Audio API OscillatorNode | Zero external audio asset downloads; low-latency monophonic tone generation using sine/triangle waveforms |
 | Styling | Tailwind CSS + CSS custom properties | Dark-theme development; neon palettes via CSS variables |
 | Testing | Vitest + React Testing Library + Playwright | Native Vite integration; fast unit tests + browser e2e |
-| PBT Framework | fast-check (Partial enforcement) | Integrates with Vitest; supports custom generators, shrinking, seed reproducibility |
-| Deployment | Netlify | Static hosting; global CDN; zero-server cost |
+| Deployment | Netlify / GitHub Pages | Static hosting; global CDN |
 
 ---
 
@@ -93,6 +93,17 @@
 | UI-06 | An onboarding modal shall introduce key features on the user's first visit (persisted via localStorage). | Must Have | PRD + Q5 |
 | UI-07 | The app shall display the note history (last 5 notes) in a sidebar or panel. | Must Have | PRD + Q5 |
 
+### FR-6: Sound Playback & Synthesis
+
+| ID | Requirement | Priority | Source |
+|---|---|---|---|
+| SP-01 | The app shall support playing note sound when virtual keys are clicked or keyboard-focused (via Enter/Space) on screen. | Must Have | Req-Q3 |
+| SP-02 | The app shall feature a prominent toggle/switch button in the UI header to switch between two modes: **Mic Mode** and **Synth Mode**. | Must Have | Req-Clar-Q1 |
+| SP-03 | In **Mic Mode**, the microphone capture and real-time pitch detection engine are active. Pressing virtual keys does NOT play sound (remains silent). | Must Have | Req-Clar-Q1 |
+| SP-04 | In **Synth Mode**, the microphone audio capture is stopped and pitch detection is inactive. Clicking virtual keys triggers oscillator sound playback. | Must Have | Req-Clar-Q1 |
+| SP-05 | Sound synthesis shall operate completely client-side utilizing Web Audio API oscillators (`OscillatorNode`). | Must Have | Req-Q4 |
+| SP-06 | Tone generation shall be monophonic (only one note plays at a time; starting a new note cuts off the previous note with a smooth volume release envelope to prevent pops). | Must Have | Req-Q6 |
+
 ---
 
 ## Non-Functional Requirements
@@ -103,7 +114,7 @@
 |---|---|
 | NFR-P-01 | Page load under 2 seconds on a 10Mbps connection. |
 | NFR-P-02 | Audio pipeline initialises within 500ms of microphone permission grant. |
-| NFR-P-03 | End-to-end latency (key strike to neon highlight) under 100ms on Chrome desktop. |
+| NFR-P-03 | End-to-end latency (key strike to sound playback and neon highlight) under 100ms on Chrome desktop. |
 | NFR-P-04 | Canvas animations sustain 60fps on a mid-range laptop (2020 or newer). |
 
 ### NFR-2: Security & Privacy
@@ -114,14 +125,14 @@
 | NFR-S-02 | HTTPS required for all deployments (getUserMedia constraint). |
 | NFR-S-03 | No microphone data stored or logged. Privacy policy to state audio is processed locally only. |
 
-*Note: Security extension rules are disabled for this project (Q10: opted out).*
+*Note: Security extension rules are disabled for this project.*
 
 ### NFR-3: Accessibility
 
 | ID | Requirement |
 |---|---|
 | NFR-A-01 | WCAG 2.1 AA compliance verified via automated audit (axe or similar). |
-| NFR-A-02 | All interactive elements (keys, toggle, slider, theme selector) shall have screen reader labels. |
+| NFR-A-02 | All interactive elements (keys, toggle, slider, theme selector, mode switch) shall have screen reader labels. |
 | NFR-A-03 | Keyboard navigation support for all UI controls. |
 | NFR-A-04 | Provide visual fallback descriptions for users with colour vision deficiencies. |
 
@@ -141,7 +152,7 @@
 | ID | Requirement |
 |---|---|
 | NFR-R-01 | App shall remain functional if audio input drops transiently; auto-reconnect within 1 second. |
-| NFR-R-02 | App degrades gracefully if microphone permission is denied (demo/manual mode available). |
+| NFR-R-02 | App degrades gracefully if microphone permission is denied (demo/manual mode available via Synth Mode). |
 
 ### NFR-6: Maintainability & Testing
 
@@ -150,75 +161,16 @@
 | NFR-M-01 | Code coverage greater than 70% (unit + component tests via Vitest + RTL). |
 | NFR-M-02 | Modular audio and UI components with documented TypeScript interfaces. |
 | NFR-M-03 | End-to-end tests via Playwright covering core user flows. |
-| NFR-M-04 | Property-based tests (fast-check, partial mode) for pitch detection pure functions and frequency/MIDI round-trip conversions (PBT-02, PBT-03, PBT-07, PBT-08, PBT-09 enforced). |
 
----
-
-## Property-Based Testing Scope (Partial Enforcement)
-
-PBT extension is enabled in **Partial** mode. Only the following rules are enforced as blocking constraints:
-
-| Rule | Description | Applicable Areas in PianoVora |
-|---|---|---|
-| PBT-02 | Round-trip properties | Frequency → MIDI note number → frequency (round-trip within tolerance); MIDI → key index → MIDI |
-| PBT-03 | Invariant properties | Pitch detection output always in valid piano range [27.5Hz, 4186Hz] or null; key index always in [0, 87] |
-| PBT-07 | Generator quality | Domain generators for frequency values (constrained to piano range), MIDI note numbers (21–108), key indices (0–87) |
-| PBT-08 | Shrinking and reproducibility | fast-check shrinking enabled; seed logged on failure; PBT included in CI |
-| PBT-09 | Framework selection | fast-check documented in package.json and tech stack decisions |
+*Note: Property-based testing (PBT) extension is disabled for the sound playback feature scope.*
 
 ---
 
 ## Scope Summary
 
-### In Scope — v1.0 (All Must Have + All Should Have)
-
-- Real-time microphone audio capture via Web Audio API
-- Pitch detection using `pitchy` library (YIN/McLeod), client-side only
-- Full 88-key SVG piano keyboard (A0–C8)
-- Canvas overlay for neon sparkle/glow animations at 60fps
-- Three confirmed neon themes: Cyber, Aurora, Sunset
-- Note name overlay on detected key (e.g. G#4)
-- Single-note recognition only
-- Clickable/tappable keys for testing visuals without audio
-- On/off microphone toggle
-- Real-time audio level meter
-- Sensitivity slider (noise gate threshold)
-- Note history panel (last 5 notes)
-- Onboarding modal on first visit
-- Responsive layout from 360px (full phone portrait) to desktop
-- Dark theme UI
-- Microphone permission handling and error states
-- Zero install, no login, browser-native
-
-### Out of Scope — v1.0
-
-- Polyphonic / chord recognition (deferred to v2)
-- Sheet music display or score following
-- MIDI device input (USB/Bluetooth)
-- Practice session recording or history
-- User accounts or cloud sync
-- Gamification or scoring engine
-- Native mobile application (iOS/Android)
-
----
-
-## Launch Acceptance Criteria (from PRD Section 13)
-
-1. Note detection accuracy on 50 standard piano notes achieves >95%.
-2. End-to-end latency from key strike to neon highlight measured at <100ms on Chrome desktop.
-3. Full 88-key keyboard renders correctly and is scrollable at 360px viewport width.
-4. Neon sparkle animation sustains 60fps on a mid-range 2020+ laptop.
-5. App passes WCAG 2.1 AA automated accessibility audit.
-6. Privacy review confirms zero audio data leaves the device.
-7. Successful testing on Chrome 110+, Firefox 110+, Safari 16+, Edge 110+.
-8. User acceptance testing with 5 piano learners confirms intuitive use without instruction.
-
----
-
-## Key Assumptions & Constraints
-
-- HTTPS deployment is mandatory (getUserMedia constraint).
-- Users play equal-temperament piano tuned to A4 = 440Hz.
-- Device microphone positioned within 1–3 metres of the piano.
-- No external audio ML API budget — all processing client-side.
-- Safari Web Audio API partial support handled via targeted workarounds.
+### In Scope — v1.1 (Sound Playback Feature Addition)
+- Real-time Web Audio API monophonic synthesizer using oscillators.
+- UI Mode Switch button (Mic Mode vs. Synth Mode).
+- Automatic stop/suspend of microphone input and level meter when switching to Synth Mode.
+- Keyboard triggers (mouse clicks, touch events, and keyboard space/enter) playing the target frequency sound in Synth Mode.
+- Integration tests ensuring that switching modes correctly updates store state and stops/starts microphone hooks.
