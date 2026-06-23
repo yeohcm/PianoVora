@@ -1,40 +1,23 @@
-# Execution Plan
+# Execution Plan - Mode Toggling Fix
 
 ## Detailed Analysis Summary
 
 ### Transformation Scope (Brownfield Only)
-- **Transformation Type**: Application-level change.
-- **Primary Changes**: Integrate Web Audio oscillator synthesis into virtual keyboard triggers, update Zustand store state with mode selection (`inputMode: 'mic' | 'synth'`), create mode switch toggle inside UI header, and manage microphone suspension cleanly.
-- **Related Components**:
-  - `src/store/audioSlice.ts` / `src/store/appStore.ts`: Add `inputMode` and `setInputMode(mode)`.
-  - `src/features/audio/useAudioEngine.ts` / `src/features/pitch/usePitchDetector.ts`: React to `inputMode === 'synth'` by stopping/releasing mic and halting detection frames.
-  - `src/features/ui/AppLayout.tsx`: Add Mode Switch toggle buttons, show Synth active HUD state, and disable mic-specific controls.
-  - `src/features/keyboard/PianoKeyboard.tsx`: Trigger monophonic audio synthesis when clicking/keyboard-pressing SVG keys.
-  - `src/features/keyboard/synthesizer.ts`: New file housing standard Web Audio oscillator tone outputs and ADSR envelopes.
+- **Transformation Type**: Single component fix.
+- **Primary Changes**: Modifying `src/features/ui/AppLayout.tsx` to fix missing React imports and prevent the `wasListeningRef.current` tracking logic from being prematurely overwritten with a stale `isListening` state.
+- **Related Components**: `src/features/ui/AppLayout.tsx`
 
 ### Change Impact Assessment
-- **User-facing changes**: Yes — user gets a Mode Toggle header control, synthesized sound output on virtual key click (when in Synth mode), and a modified HUD active note state during Synth play.
-- **Structural changes**: No — uses existing React component boundaries.
-- **Data model changes**: No — only in-memory Zustand UI slices are updated.
+- **User-facing changes**: Yes. Switching from Synth Mode back to Mic Mode will automatically resume listening if the microphone was active before the user entered Synth Mode.
+- **Structural changes**: No.
+- **Data model changes**: No.
 - **API changes**: No.
-- **NFR impact**: None.
-
-### Component Relationships (Brownfield Only)
-```markdown
-## Component Relationships
-- **Primary Component**: src/features/keyboard/PianoKeyboard.tsx (dispatches click play event)
-- **Infrastructure Components**: None
-- **Shared Components**: src/features/keyboard/synthesizer.ts (custom audio synthesis helper module)
-- **Dependent Components**: src/features/ui/AppLayout.tsx (renders mode selection controls)
-- **Supporting Components**: src/store/audioSlice.ts (maintains inputMode state)
-```
+- **NFR impact**: No.
 
 ### Risk Assessment
-- **Risk Level**: Low.
-- **Rollback Complexity**: Easy — code remains isolated to client-only packages.
-- **Testing Complexity**: Moderate — requires mocking Web Audio oscillators and testing layout mode transitions in Vitest.
-
----
+- **Risk Level**: Low. The change is isolated to a single UI layout file.
+- **Rollback Complexity**: Easy. Standard git reversion.
+- **Testing Complexity**: Simple. Running the existing Vitest suite and adding/modifying mode switching tests.
 
 ## Workflow Visualization
 
@@ -45,11 +28,12 @@ flowchart TD
     
     subgraph INCEPTION["🔵 INCEPTION PHASE"]
         WD["Workspace Detection<br/><b>COMPLETED</b>"]
-        RE["Reverse Engineering<br/><b>COMPLETED</b>"]
+        RE["Reverse Engineering<br/><b>SKIPPED</b>"]
         RA["Requirements Analysis<br/><b>COMPLETED</b>"]
-        US["User Stories<br/><b>COMPLETED</b>"]
-        WP["Workflow Planning<br/><b>IN PROGRESS</b>"]
+        US["User Stories<br/><b>SKIPPED</b>"]
+        WP["Workflow Planning<br/><b>EXECUTE</b>"]
         AD["Application Design<br/><b>SKIP</b>"]
+        UP["Units Planning<br/><b>SKIP</b>"]
         UG["Units Generation<br/><b>SKIP</b>"]
     end
     
@@ -67,30 +51,27 @@ flowchart TD
     end
     
     Start --> WD
-    WD --> RE
-    RE --> RA
-    RA --> US
-    US --> WP
+    WD --> RA
+    RA --> WP
     WP --> CG
     CG --> BT
     BT --> End(["Complete"])
-
-    style WD fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
-    style RE fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
-    style RA fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
-    style US fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
-    style WP fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
     
+    style WD fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
+    style RA fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
+    style WP fill:#FFA726,stroke:#E65100,stroke-width:3px,stroke-dasharray: 5 5,color:#000
+    style RE fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
+    style US fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
     style AD fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
+    style UP fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
     style UG fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
     
     style FD fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
     style NFRA fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
     style NFRD fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
     style ID fill:#BDBDBD,stroke:#424242,stroke-width:2px,stroke-dasharray: 5 5,color:#000
-    
-    style CG fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
-    style BT fill:#4CAF50,stroke:#1B5E20,stroke-width:3px,color:#fff
+    style CG fill:#FFA726,stroke:#E65100,stroke-width:3px,stroke-dasharray: 5 5,color:#000
+    style BT fill:#FFA726,stroke:#E65100,stroke-width:3px,stroke-dasharray: 5 5,color:#000
     
     style Start fill:#CE93D8,stroke:#6A1B9A,stroke-width:3px,color:#000
     style End fill:#CE93D8,stroke:#6A1B9A,stroke-width:3px,color:#000
@@ -99,69 +80,63 @@ flowchart TD
 ```
 
 ### Text Alternative
-- **Start**: User requests a new key press sound synthesis feature.
-- **Workspace Detection**: Scan and detect project structure (COMPLETED).
-- **Reverse Engineering**: Analyze current audio engine, pitch tracker, and keyboard modules (COMPLETED).
-- **Requirements Analysis**: Verify scope details (e.g. modes, polyphony, synth type) with clarifying questions (COMPLETED).
-- **User Stories**: Write FEAT-11 and update personas (COMPLETED).
-- **Workflow Planning**: Select phases to execute/skip (IN PROGRESS).
-- **Application Design**: Skip — does not modify system structure.
-- **Units Planning/Generation**: Skip — groups all changes into a single workspace unit (`Unit 5`).
-- **Functional Design / NFR Design / Infrastructure Design**: Skip — changes are straightforward UI/audio implementations requiring no architecture changes.
-- **Code Generation**: Execute planning and file changes (EXECUTE).
-- **Build and Test**: Validate with full Vitest regression tests (EXECUTE).
-
----
+- **Phase 1: INCEPTION**
+  - Workspace Detection: COMPLETED
+  - Reverse Engineering: SKIPPED (stale check passed, current artifacts exist)
+  - Requirements Analysis: COMPLETED (minimal depth)
+  - User Stories: SKIPPED (bug fix with clear scope)
+  - Workflow Planning: EXECUTE
+  - Application Design: SKIP (no architectural modifications)
+  - Units Planning: SKIP
+  - Units Generation: SKIP
+- **Phase 2: CONSTRUCTION**
+  - Functional Design: SKIP
+  - NFR Requirements: SKIP
+  - NFR Design: SKIP
+  - Infrastructure Design: SKIP
+  - Code Generation: EXECUTE (modifying AppLayout.tsx)
+  - Build and Test: EXECUTE (run unit tests and build step)
+- **Phase 3: OPERATIONS**
+  - Operations: PLACEHOLDER
 
 ## Phases to Execute
 
 ### 🔵 INCEPTION PHASE
 - [x] Workspace Detection (COMPLETED)
-- [x] Reverse Engineering (COMPLETED)
 - [x] Requirements Analysis (COMPLETED)
-- [x] User Stories (COMPLETED)
-- [x] Execution Plan (IN PROGRESS)
+- [x] Workflow Planning (IN PROGRESS)
 - [ ] Application Design - SKIP
-  - **Rationale**: The change fits within existing component and state layout structures; no new core components or routing definitions are required.
+  - **Rationale**: The change only affects a single UI wrapper and its hook tracking logic; no architectural/component boundaries are added or changed.
 - [ ] Units Planning - SKIP
-  - **Rationale**: Not required as this is a single self-contained task.
+  - **Rationale**: No decomposition needed.
 - [ ] Units Generation - SKIP
-  - **Rationale**: The work is compiled into a single workspace unit (`Unit 5: Sound Synthesis & Mode Controls`) which executes consecutively.
+  - **Rationale**: Single unit of work.
 
 ### 🟢 CONSTRUCTION PHASE
 - [ ] Functional Design - SKIP
-  - **Rationale**: Standard React component UI bindings and Web Audio API play calls do not need detailed schematic or data modeling diagrams.
+  - **Rationale**: Logic is simple and well understood.
 - [ ] NFR Requirements - SKIP
-  - **Rationale**: Latency constraints (<100ms) are already established in v1.0. No new scaling or hosting specifications apply.
+  - **Rationale**: No new NFRs.
 - [ ] NFR Design - SKIP
-  - **Rationale**: Sound generation leverages standard browser-native context features, requiring no advanced design patterns.
+  - **Rationale**: No new NFR patterns needed.
 - [ ] Infrastructure Design - SKIP
-  - **Rationale**: Standard static code updates. No CDK/CloudFormation alterations.
+  - **Rationale**: Pure application layer fix.
 - [ ] Code Generation - EXECUTE (ALWAYS)
-  - **Rationale**: Create `synthesizer.ts`, add mode switch controls, and hook keyboard play handlers.
+  - **Rationale**: To apply imports and event dependencies fixes.
 - [ ] Build and Test - EXECUTE (ALWAYS)
-  - **Rationale**: Ensure all 253+ tests pass and implement new unit/integration tests covering the mode switch states.
+  - **Rationale**: Required to ensure zero regressions across the codebase.
 
 ### 🟡 OPERATIONS PHASE
 - [ ] Operations - PLACEHOLDER
-  - **Rationale**: Standard GitHub Pages push deployment.
-
----
-
-## Package Change Sequence (Brownfield Only)
-*Note: Single monorepo package. No multi-package updates required.*
+  - **Rationale**: System deployment status verification.
 
 ## Estimated Timeline
-- **Total Phases**: 2 (Inception + Construction)
-- **Estimated Duration**: ~1 hour execution
+- **Total Phases**: 2 (Inception, Construction)
+- **Estimated Duration**: ~15 minutes
 
 ## Success Criteria
-- **Primary Goal**: Synthesize soft monophonic tone playback when clicking virtual keys in Synth Mode while preventing mic loop feedback.
-- **Key Deliverables**:
-  - `src/features/keyboard/synthesizer.ts` (monophonic oscillator engine)
-  - Mode Switch control in `AppLayout.tsx`
-  - Updated store actions in `audioSlice.ts`
-  - Modified listener triggers in `useAudioEngine.ts` and `usePitchDetector.ts`
+- **Primary Goal**: Switching back to Mic Mode automatically resumes listening state only if previously active, with zero runtime/compilation errors.
+- **Key Deliverables**: Modified `src/features/ui/AppLayout.tsx` and passing tests.
 - **Quality Gates**:
-  - Zero TypeScript compile errors (`npm run lint` matches `tsc --noEmit`).
-  - Unit/integration test suites pass with >70% coverage.
+  - `npm run lint` compiles cleanly.
+  - `npm run test:run` runs and all 266 unit tests pass.

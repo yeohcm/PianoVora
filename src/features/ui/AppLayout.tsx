@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { useAudioEngine } from '@/features/audio/useAudioEngine';
 import { usePitchDetector } from '@/features/pitch/usePitchDetector';
@@ -11,6 +11,7 @@ import NoteHistoryPanel from './NoteHistoryPanel';
 import OnboardingModal from './OnboardingModal';
 import ErrorBanner from './ErrorBanner';
 import { WalkthroughOverlay, TOUR_STEP_COUNT } from './WalkthroughOverlay';
+import { HudCanvasOverlay } from './HudCanvasOverlay';
 
 function safeSetItem(key: string, value: string): void {
   try { localStorage.setItem(key, value); }
@@ -27,10 +28,34 @@ export default function AppLayout() {
   const inputMode              = useAppStore((s) => s.inputMode);
   const setInputMode           = useAppStore((s) => s.setInputMode);
 
+  const activeColor = (() => {
+    if (theme === 'rainbow' && detectedNote) {
+      return `hsl(${Math.round((detectedNote.keyIndex / 87) * 360)}deg, 100%, 65%)`;
+    }
+    return 'var(--glow-colour)';
+  })();
+
   const [tourStep, setTourStep] = useState<number | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const { start, stop, analyserRef } = useAudioEngine();
   usePitchDetector({ analyserRef });
+
+  const wasListeningRef = useRef(false);
+  const isListening = useAppStore((s) => s.isListening);
+
+  useEffect(() => {
+    if (inputMode === 'mic') {
+      wasListeningRef.current = isListening;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isListening]);
+
+  useEffect(() => {
+    if (inputMode === 'mic' && wasListeningRef.current) {
+      start();
+    }
+  }, [inputMode, start]);
 
   useEffect(() => {
     safeSetItem('pianovora_theme', theme);
@@ -59,21 +84,45 @@ export default function AppLayout() {
         className="sticky top-0 z-50 backdrop-blur-md bg-[#0a0a0f]/80 border-b border-white/10 px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-4"
         data-testid="app-header"
       >
-        {/* Brand logo */}
-        <div className="flex items-center gap-2 mr-auto sm:mr-0 select-none">
+        {/* Brand logo and mobile menu toggle */}
+        <div className="flex items-center justify-between w-full sm:w-auto select-none">
           <span 
             className="font-black text-xl tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-[var(--neon-accent)]"
             style={{ textShadow: '0 0 10px var(--glow-colour)' }}
           >
             PianoVora
           </span>
+          <button
+            type="button"
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="sm:hidden p-2 text-white/70 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white/20 rounded-xl"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu-controls"
+            aria-label="Toggle navigation menu"
+            data-testid="menu-toggle-btn"
+          >
+            {menuOpen ? (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
         </div>
 
         {/* Controls group */}
-        <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto justify-end">
+        <div 
+          id="mobile-menu-controls"
+          className={`${
+            menuOpen ? 'flex' : 'hidden'
+          } sm:flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto justify-end mt-3 sm:mt-0`}
+        >
           {/* Mode switch (BR-11 / FEAT-11) */}
           <div
-            className="flex items-center bg-white/5 border border-white/10 rounded-xl p-1 shadow-inner select-none"
+            className="flex items-center bg-white/5 border border-white/10 rounded-xl p-1 shadow-inner select-none w-full sm:w-auto"
             role="radiogroup"
             aria-label="Input Mode Switch"
           >
@@ -82,7 +131,7 @@ export default function AppLayout() {
               role="radio"
               aria-checked={inputMode === 'mic'}
               onClick={() => setInputMode('mic')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-1.5 flex-1 sm:flex-initial ${
                 inputMode === 'mic'
                   ? 'bg-white/10 text-white border border-white/20 shadow-md'
                   : 'text-white/40 hover:text-white/70 border border-transparent'
@@ -103,7 +152,7 @@ export default function AppLayout() {
               role="radio"
               aria-checked={inputMode === 'synth'}
               onClick={() => setInputMode('synth')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-1.5 flex-1 sm:flex-initial ${
                 inputMode === 'synth'
                   ? 'bg-white/10 text-white border border-white/20 shadow-md'
                   : 'text-white/40 hover:text-white/70 border border-transparent'
@@ -122,11 +171,11 @@ export default function AppLayout() {
           </div>
 
           {/* Audio Input Group */}
-          <div className={`flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-1.5 px-3 shadow-inner transition-all duration-300 ${
+          <div className={`flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-1.5 px-3 shadow-inner transition-all duration-300 w-full sm:w-auto ${
             inputMode === 'synth' ? 'opacity-30 pointer-events-none' : ''
           }`}>
             <MicToggle onStart={start} onStop={stop} />
-            <div className="w-24 sm:w-28 md:w-32 flex flex-col gap-1 justify-center">
+            <div className="flex-1 sm:w-28 md:w-32 flex flex-col gap-1 justify-center">
               <span className="text-[9px] uppercase tracking-widest text-white/40 font-bold leading-none select-none">Level</span>
               <div className="h-1.5 flex items-center">
                 <AudioLevelMeter />
@@ -135,14 +184,14 @@ export default function AppLayout() {
           </div>
 
           {/* Sensitivity Group */}
-          <div className={`w-full sm:w-44 md:w-56 max-w-xs transition-all duration-300 ${
+          <div className={`w-full sm:w-44 md:w-56 transition-all duration-300 ${
             inputMode === 'synth' ? 'opacity-30 pointer-events-none' : ''
           }`}>
             <SensitivitySlider />
           </div>
 
           {/* Theme Selector */}
-          <div className="bg-white/5 border border-white/10 rounded-xl p-1.5 px-2.5">
+          <div className="bg-white/5 border border-white/10 rounded-xl p-1.5 px-2.5 w-full sm:w-auto flex justify-center">
             <ThemeSelector />
           </div>
         </div>
@@ -154,13 +203,20 @@ export default function AppLayout() {
 
       <main className="flex-1 flex flex-col items-center justify-between p-6 overflow-hidden" data-testid="app-main">
         {/* Central Visualizer / Note HUD */}
-        <div className="flex-1 flex items-center justify-center w-full max-w-4xl my-4">
+        <div className="flex-1 flex items-center justify-center w-full max-w-4xl my-4 relative">
+          {/* Sparkle animation overlay centered on the HUD box parent container (so sparkles float outside boundaries) */}
+          <HudCanvasOverlay 
+            activeKeyIndex={detectedNote ? detectedNote.keyIndex : null}
+            sparkleColour={activeColor.includes('var') ? undefined : activeColor}
+          />
+
           <div 
             className="w-full max-w-md p-8 rounded-2xl border border-white/10 backdrop-blur-lg bg-[#0e0e15]/40 flex flex-col items-center justify-center text-center shadow-2xl relative overflow-hidden transition-all duration-300 hover:border-white/20"
             style={{ 
               boxShadow: detectedNote 
-                ? '0 0 40px -10px var(--glow-colour), inset 0 0 20px -10px var(--glow-colour)' 
-                : '0 20px 50px rgba(0,0,0,0.5)'
+                ? `0 0 40px -10px ${activeColor}, inset 0 0 20px -10px ${activeColor}` 
+                : '0 20px 50px rgba(0,0,0,0.5)',
+              borderColor: detectedNote ? activeColor : undefined,
             }}
           >
             {/* Background glowing gradient */}
@@ -168,17 +224,22 @@ export default function AppLayout() {
               className="absolute inset-0 opacity-10 blur-3xl pointer-events-none transition-all duration-500"
               style={{
                 background: detectedNote 
-                  ? 'radial-gradient(circle, var(--glow-colour) 0%, transparent 70%)' 
+                  ? `radial-gradient(circle, ${activeColor} 0%, transparent 70%)` 
                   : 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)'
               }}
             />
 
             {detectedNote ? (
               <div className="flex flex-col items-center animate-fade-in" data-testid="hud-active">
-                <span className="text-[10px] uppercase tracking-widest text-[var(--neon-accent)] font-bold mb-2 select-none">Detected Note</span>
+                <span 
+                  className="text-[10px] uppercase tracking-widest font-bold mb-2 select-none"
+                  style={{ color: activeColor }}
+                >
+                  Detected Note
+                </span>
                 <h1 
                   className="text-6xl md:text-7xl font-black tracking-tighter text-white select-none animate-pulse-slow"
-                  style={{ textShadow: '0 0 20px var(--glow-colour), 0 0 40px var(--glow-colour)' }}
+                  style={{ textShadow: `0 0 20px ${activeColor}, 0 0 40px ${activeColor}` }}
                 >
                   {detectedNote.noteName}
                   <span className="text-3xl md:text-4xl font-light text-white/70 ml-1">{detectedNote.octave}</span>

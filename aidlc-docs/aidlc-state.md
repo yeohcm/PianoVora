@@ -4,7 +4,7 @@
 - **Project Name**: PianoVora
 - **Project Type**: Brownfield
 - **Start Date**: 2026-05-09T00:00:00Z
-- **Current Stage**: CONSTRUCTION - Code Generation
+- **Current Stage**: OPERATIONS - Operations (Complete)
 
 ## Workspace State
 - **Existing Code**: Yes
@@ -40,25 +40,20 @@
 - **Unit 4**: UI Shell & Features (layout, controls, modals, error states, Netlify config)
 - **Unit 5**: Sound Synthesis & Mode Controls (oscillator tone generation, Synth vs Mic inputMode)
 
-## Stage Progress (v1.1 Sound Feature Addition)
+## Stage Progress (Mode Toggling Fix)
 
 ### INCEPTION PHASE
 - [x] Workspace Detection — COMPLETE (Brownfield)
-- [x] Reverse Engineering — COMPLETE (2026-06-23T19:04:15+12:00)
-- [x] Requirements Analysis — COMPLETE
-- [x] User Stories — COMPLETE (11 stories, 4 personas, Feature-Based, Given/When/Then)
-- [x] Workflow Planning — COMPLETE (2026-06-23T19:19:49Z)
-- [x] Application Design — SKIPPED (No architectural alterations)
-- [x] Units Generation — SKIPPED (Grouped as Unit 5)
+- [x] Reverse Engineering — SKIPPED (stale check passed, current artifacts exist)
+- [x] Requirements Analysis — COMPLETE (2026-06-23T22:04:53+12:00)
+- [x] Workflow Planning — COMPLETE (2026-06-23T22:05:35Z)
+- [ ] Application Design — SKIP (no architectural changes)
+- [ ] Units Planning — SKIP
+- [ ] Units Generation — SKIP
 
 ### CONSTRUCTION PHASE
-- [x] Per-Unit Loop (Unit 5: Sound Synthesis & Mode Controls):
-  - [x] Functional Design — SKIPPED
-  - [x] NFR Requirements — SKIPPED
-  - [x] NFR Design — SKIPPED
-  - [x] Infrastructure Design — SKIPPED
-  - [x] Code Generation — COMPLETE (2026-06-23T19:30:52Z)
-- [x] Build and Test — COMPLETE (2026-06-23T19:32:20Z)
+- [x] Code Generation — COMPLETE (2026-06-23T22:12:35Z)
+- [x] Build and Test — COMPLETE (2026-06-23T22:15:15Z)
 
 ### OPERATIONS PHASE
-- [x] Operations — COMPLETE (2026-06-23T21:21:50Z)
+- [x] Operations — COMPLETE (2026-06-23T22:16:32+12:00)

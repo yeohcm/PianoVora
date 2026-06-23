@@ -18,7 +18,7 @@ export function ThemeSelector() {
       role="group"
       aria-label="Colour theme"
       data-testid="theme-selector"
-      style={{ display: 'flex', gap: 6, alignItems: 'center' }}
+      className="grid grid-cols-2 gap-2 w-full sm:flex sm:flex-row sm:gap-1.5 sm:w-auto items-center"
     >
       {(['cyber', 'aurora', 'sunset', 'rainbow'] as NeonTheme[]).map((t) => {
         const accent   = THEME_DEFINITIONS[t]['--neon-accent'];
@@ -29,31 +29,20 @@ export function ThemeSelector() {
             onClick={() => setTheme(t)}
             aria-pressed={isActive}
             data-testid={`theme-btn-${t}`}
+            className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer border-2 flex-1 sm:flex-initial"
             style={{
-              display:        'flex',
-              alignItems:     'center',
-              gap:            6,
-              padding:        '6px 12px',
-              borderRadius:   6,
-              border:         isActive ? `2px solid ${accent}` : '2px solid rgba(255,255,255,0.18)',
-              background:     isActive ? `color-mix(in srgb, ${accent} 18%, transparent)` : 'rgba(255,255,255,0.06)',
+              borderColor: isActive ? accent : 'rgba(255,255,255,0.18)',
+              background: isActive ? `color-mix(in srgb, ${accent} 18%, transparent)` : 'rgba(255,255,255,0.06)',
               color:          '#fff',
-              cursor:         'pointer',
               fontWeight:     isActive ? 700 : 400,
-              fontSize:       13,
               whiteSpace:     'nowrap',
-              transition:     'border-color 0.15s, background 0.15s',
             }}
           >
             <span
               aria-hidden="true"
+              className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0"
               style={{
-                display:      'inline-block',
-                width:        11,
-                height:       11,
-                borderRadius: '50%',
                 background:   SWATCH[t],
-                flexShrink:   0,
               }}
             />
             {THEME_DEFINITIONS[t].label}

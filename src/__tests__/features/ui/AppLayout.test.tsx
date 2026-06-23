@@ -2,10 +2,13 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { useAppStore } from '@/store/appStore';
 
+const mockStart = vi.fn();
+const mockStop = vi.fn();
+
 vi.mock('@/features/audio/useAudioEngine', () => ({
   useAudioEngine: () => ({
-    start: vi.fn(),
-    stop: vi.fn(),
+    start: mockStart,
+    stop: mockStop,
     analyserRef: { current: null },
   }),
 }));
@@ -16,6 +19,10 @@ vi.mock('@/features/pitch/usePitchDetector', () => ({
 
 vi.mock('@/features/keyboard/PianoKeyboard', () => ({
   PianoKeyboard: () => <div data-testid="piano-keyboard-mock" />,
+}));
+
+vi.mock('@/features/ui/HudCanvasOverlay', () => ({
+  HudCanvasOverlay: () => <div data-testid="hud-canvas-overlay-mock" />,
 }));
 
 vi.mock('@/features/audio/MicToggle', () => ({
@@ -72,6 +79,8 @@ describe('AppLayout', () => {
   beforeEach(() => {
     vi.stubGlobal('localStorage', mockLocalStorage);
     mockSetItem.mockClear();
+    mockStart.mockClear();
+    mockStop.mockClear();
     resetStore();
   });
 
@@ -265,6 +274,71 @@ describe('AppLayout', () => {
       render(<AppLayout />);
       expect(screen.getByText('Press a key to play')).toBeInTheDocument();
       expect(screen.getByText('Synthesizer active…')).toBeInTheDocument();
+    });
+
+    it('resumes listening when switching back to mic mode if wasListening was true', () => {
+      resetStore({ inputMode: 'mic', isListening: true });
+      const { rerender } = render(<AppLayout />);
+      
+      act(() => {
+        useAppStore.setState({ inputMode: 'synth' });
+      });
+      act(() => {
+        useAppStore.setState({ isListening: false });
+      });
+      rerender(<AppLayout />);
+
+      mockStart.mockClear();
+      act(() => {
+        useAppStore.setState({ inputMode: 'mic' });
+      });
+      rerender(<AppLayout />);
+
+      expect(mockStart).toHaveBeenCalled();
+    });
+
+    it('does not resume listening when switching back to mic mode if wasListening was false', () => {
+      resetStore({ inputMode: 'mic', isListening: false });
+      const { rerender } = render(<AppLayout />);
+      
+      act(() => {
+        useAppStore.setState({ inputMode: 'synth' });
+      });
+      rerender(<AppLayout />);
+
+      mockStart.mockClear();
+      act(() => {
+        useAppStore.setState({ inputMode: 'mic' });
+      });
+      rerender(<AppLayout />);
+
+      expect(mockStart).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('mobile menu toggle', () => {
+    it('renders mobile toggle menu button in header', () => {
+      render(<AppLayout />);
+      expect(screen.getByTestId('menu-toggle-btn')).toBeInTheDocument();
+    });
+
+    it('toggles controls group open status on click', () => {
+      render(<AppLayout />);
+      
+      const menuBtn = screen.getByTestId('menu-toggle-btn');
+      const controls = screen.getByLabelText('Input Mode Switch').parentElement;
+
+      // Initially closed / has hidden class
+      expect(controls).toHaveClass('hidden');
+
+      // Click to open
+      fireEvent.click(menuBtn);
+      expect(controls).toHaveClass('flex');
+      expect(controls).not.toHaveClass('hidden');
+
+      // Click to close
+      fireEvent.click(menuBtn);
+      expect(controls).toHaveClass('hidden');
     });
   });
 });

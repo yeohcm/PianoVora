@@ -815,3 +815,137 @@
 **User Input**: "approve"
 **AI Response**: Received approval for the Build and Test stage. Transitions to Operations phase. Since the Operations stage is a placeholder in the current AI-DLC specifications, the workflow ends successfully.
 **Context**: Completed all project features, builds, tests, and lifecycle steps.
+
+---
+
+## HUD Sparkle & Color Adjustments Stage
+**Timestamp**: 2026-06-23T21:27:50+12:00
+**User Input**: "next, make the sparkle animation appear in the middle of the box as well for both mic and synth mode" / "the sparle color should match the color mode, the middle box also should match the mode"
+**AI Response**: Updated useSparkleAnimation hook with optional spawnCenter parameter to trigger canvas-centered sparkles. Created HudCanvasOverlay component and integrated it inside the HUD visualizer box. Computed activeColor dynamically to align HUD borders, text shadows, background gradients, and sparkles to the current theme (and dynamic HSL key colors in rainbow mode). Verified build and test suite regressions.
+**Context**: Added visual feedback feature and color synchronization for the Note HUD.
+
+---
+
+## Mobile Navigation Controls Toggle Stage
+**Timestamp**: 2026-06-23T21:32:00+12:00
+**User Input**: "in mobile mode, allow menu to be hiden"
+**AI Response**: Added menuOpen navigation state in AppLayout.tsx. Created responsive hamburger and close toggles in the header, visible on viewport sizes below small (sm:hidden). Bound the toggled class states to hide/show the header controls drawer dynamically. Added test specs in AppLayout.test.tsx and verified that all 266 tests pass successfully.
+**Context**: Implemented responsive navigation controls menu for mobile screen widths.
+
+---
+
+## Responsive Menu Buttons and Controls Stage
+**Timestamp**: 2026-06-23T21:45:10+12:00
+**User Input**: "make the buttons and controls in the menu mobile responsive"
+**AI Response**: Refactored ThemeSelector.tsx to utilize clean Tailwind CSS grid-cols-2 classes instead of rigid inline display flex properties, enabling buttons to stack cleanly on mobile. Modified AppLayout.tsx to apply w-full block styles to Mode switch, Audio Input Group, and Theme Selector wrappers on mobile width viewports, ensuring they occupy and stretch across screen space neatly. Verified 266 passing test suites and production build compiling successfully.
+**Context**: Added responsive styles to header drawer menu buttons and controls.
+
+---
+
+## HUD Sparkle Container Positioning Stage
+**Timestamp**: 2026-06-23T21:46:40+12:00
+**User Input**: "make the sparkle appear outside the box"
+**AI Response**: Relocated HudCanvasOverlay from inside the overflow-hidden visualizer box to the parent container box in AppLayout.tsx. Applied relative positioning class to the parent wrapper, allowing sparkles to expand and render past the borders of the visualizer box without clipping. Verified 266 passing test specs and production build compiling successfully.
+**Context**: Moved HUD sparkle overlay outside the overflow-hidden box.
+
+---
+
+## Sparkle Animation Size Customization Stage
+**Timestamp**: 2026-06-23T21:48:40+12:00
+**User Input**: "make the animation bigger that cover wider arae"
+**AI Response**: Expanded the useSparkleAnimation hook to accept physics configuration overrides (particleCount, minSpeed, maxSpeed, minRadius, maxRadius, gravity, and fadeDuration) on each particle. Modified HudCanvasOverlay.tsx to apply wider particle parameters (particleCount: 32, maxSpeed: 7.5, maxRadius: 15, gravity: 0.08, fadeDuration: 1.2), causing Note HUD sparkles to float further, expand larger, and cover a wider visual area. Verified 266 passing test specs and production build compiling successfully.
+**Context**: Configured larger and wider particle parameters for the Note HUD sparkle animation.
+
+---
+
+## Workspace Detection — Mode Toggling Fix
+**Timestamp**: 2026-06-23T21:53:01+12:00
+**User Input**: "switching from synth back to mic mode, it is not working"
+**AI Response**: Initiated workspace detection. Scanned directory and loaded existing state. Proceeding to Requirements Analysis to fix the mode toggle bug.
+**Context**: INCEPTION PHASE — Workspace Detection stage for the mode toggling bug.
+
+---
+
+## Requirements Analysis — Mode Toggling Fix Complete
+**Timestamp**: 2026-06-23T21:54:15+12:00
+**User Input**: N/A (stage completion)
+**AI Response**: Created requirements.md for mode toggling fix. Presenting Requirements Analysis completion message.
+**Context**: INCEPTION PHASE — Requirements Analysis stage complete. Awaiting user approval to proceed to Workflow Planning.
+
+---
+
+## Requirements Analysis — Mode Toggling Fix Approved / Workflow Planning Starts
+**Timestamp**: 2026-06-23T22:04:53+12:00
+**User Input**: "approve"
+**AI Response**: Received approval for the Requirements Analysis stage. Transitioning to the Workflow Planning stage to create the execution plan.
+**Context**: Workflow Planning stage begins.
+
+---
+
+## Workflow Planning — Mode Toggling Fix Complete
+**Timestamp**: 2026-06-23T22:05:35Z
+**User Input**: N/A (stage completion)
+**AI Response**: Created execution-plan.md for mode toggling fix. Presenting Workflow Planning completion message.
+**Context**: INCEPTION PHASE — Workflow Planning stage complete. Awaiting user approval to proceed to Code Generation.
+
+---
+
+## Workflow Planning — Mode Toggling Fix Approved / Code Generation Starts
+**Timestamp**: 2026-06-23T22:06:21+12:00
+**User Input**: "approve"
+**AI Response**: Received approval for the Workflow Planning stage. Transitioning to the Construction phase (Code Generation) and starting Part 1: Planning.
+**Context**: CONSTRUCTION PHASE — Code Generation Part 1 (Planning) begins.
+
+---
+
+## Code Generation — Mode Toggling Fix Plan Created
+**Timestamp**: 2026-06-23T22:06:55Z
+**User Input**: N/A (stage completion)
+**AI Response**: Created mode-toggling-fix-code-generation-plan.md. Presenting Code Generation Plan to user for approval.
+**Context**: CONSTRUCTION PHASE — Code Generation Part 1 (Planning) complete. Awaiting user approval of Code Generation Plan.
+
+---
+
+## Code Generation — Mode Toggling Fix Plan Approved / Generation Starts
+**Timestamp**: 2026-06-23T22:09:12+12:00
+**User Input**: "approve"
+**AI Response**: Received approval for the Code Generation Plan. Transitioning to Part 2: Generation. Implementing code modifications and running tests.
+**Context**: CONSTRUCTION PHASE — Code Generation Part 2 (Generation) begins.
+
+---
+
+## Code Generation — Mode Toggling Fix Generation Complete
+**Timestamp**: 2026-06-23T22:12:35Z
+**User Input**: N/A (stage completion)
+**AI Response**: Completed code changes and verified tests passed successfully. Presenting Code Generation Completion message.
+**Context**: CONSTRUCTION PHASE — Code Generation complete. Awaiting user approval to proceed to Build and Test.
+
+---
+
+## Code Generation — Mode Toggling Fix Approved / Build and Test Starts
+**Timestamp**: 2026-06-23T22:13:10+12:00
+**User Input**: "approve"
+**AI Response**: Received approval for Code Generation. Transitioning to the Build and Test stage.
+**Context**: CONSTRUCTION PHASE — Build and Test stage begins.
+
+---
+
+## Build and Test Stage — Mode Toggling Fix Complete
+**Timestamp**: 2026-06-23T22:15:15Z
+**Build Status**: Success
+**Test Status**: Pass
+**Files Generated**:
+- build-instructions.md
+- unit-test-instructions.md
+- integration-test-instructions.md
+- performance-test-instructions.md
+- build-and-test-summary.md
+**Context**: CONSTRUCTION PHASE — Build and Test complete. Awaiting user approval to proceed to Operations.
+
+---
+
+## Build and Test Stage — Mode Toggling Fix Approved / Operations Starts
+**Timestamp**: 2026-06-23T22:16:32+12:00
+**User Input**: "approve"
+**AI Response**: Received approval for the Build and Test stage. Transitioning to the Operations phase.
+**Context**: OPERATIONS PHASE begins.
